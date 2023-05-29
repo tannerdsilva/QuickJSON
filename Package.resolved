@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "yyjson",
+        "repositoryURL": "https://github.com/tannerdsilva/yyjson.git",
+        "state": {
+          "branch": null,
+          "revision": "09ccaa449e01879e23f68d8be165e78e65334443",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
