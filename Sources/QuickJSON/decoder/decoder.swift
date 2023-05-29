@@ -3,10 +3,17 @@ import yyjson
 
 public struct Decoder {
 	private var memory:MemoryPool? = nil
+	
+	/// create a new decoder.
+	/// - parameter memory: the memory pool that this decoder will use. _**note**_: if no memory pool is provided, the decoder will use the default memory pool.
 	public init(memory:MemoryPool? = nil) {
 		self.memory = memory
 	}
-
+	
+	/// decode a value from a json document
+	/// - parameter type: the type of the value to decode
+	/// - parameter data: the json document to decode as a utf8 byte array
+	/// - parameter flags: decoding option flags
 	public func decode<T:Decodable>(_ type:T.Type, from data:[UInt8], flags:Flags = Flags()) throws -> T {
 		return try data.withUnsafeBytes { rawBufferPointer -> T in
 			let bufferPointer = rawBufferPointer.bindMemory(to:CChar.self)
@@ -73,7 +80,7 @@ extension Decoder {
 		case documentRootError
 	}
 
-	/// flags that can be used to configure the decoder and how it parses json
+	/// option flags for the decoder
 	public struct Flags:OptionSet {
 		public let rawValue: UInt32
 		public init(rawValue:UInt32 = 0) { self.rawValue = rawValue }

@@ -4,11 +4,10 @@ import yyjson
 /// this is the public interface for the json encoder
 /// - note: this struct is NOT thread safe, and is meant for serialized use only.
 public struct Encoder {
-	/// errors that may occurr during encoding
+	/// errors that may occur during encoding
 	public enum Error:Swift.Error {
 		/// the value could not be assigned
 		case assignmentError
-
 		/// memory allocation failed
 		case memoryAllocationFailure
 	}
@@ -17,12 +16,14 @@ public struct Encoder {
 	private var memory:MemoryPool? = nil
 
 	/// create a new encoder.
-	/// - parameter memory: the memory pool that this encoder will use. _**note**_:if no memory pool is provided, the encoder will use the default memory pool.
+	/// - parameter memory: the memory pool that this encoder will use. _**note**_: if no memory pool is provided, the encoder will use the default memory pool.
 	public init(_ memory:MemoryPool? = nil) {
 		self.memory = memory
 	}
 
-	/// encode an object into a json-based byte encoding. 
+	/// encode an object into a json based byte encoding.
+	/// - parameter object: the object to encode.
+	/// - parameter flags: the option flags to use for this encoding.
 	public func encode<T:Encodable>(_ object:T, flags:Flags = Flags()) throws -> [UInt8] {
 		let newDoc = yyjson_mut_doc_new(nil)
 		guard newDoc != nil else {
@@ -53,6 +54,7 @@ public struct Encoder {
 }
 
 extension Encoder {
+	/// option flags for the encoder
 	public struct Flags:OptionSet {
 		public let rawValue:UInt32
 		public init(rawValue:UInt32 = 0) { self.rawValue = rawValue }
