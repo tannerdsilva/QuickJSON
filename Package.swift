@@ -10,7 +10,7 @@ let package = Package(
 		),
 	],
 	dependencies: [
-		.package(url:"https://github.com/tannerdsilva/yyjson.git", revision:"09ccaa449e01879e23f68d8be165e78e65334443")
+		.package(url:"https://github.com/tannerdsilva/yyjson.git", "0.7.0"..<"0.8.0")
 	],
 	targets: [
 		.target(

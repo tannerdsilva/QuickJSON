@@ -1,3 +1,7 @@
+## v0.0.2
+
+- Updated `Package.swift` to use SemVer range for `yyjson` instead of explicit revision hashes.
+
 ## v0.0.1
 
 - First tag. Expecting a fairly stable experience, but more development is needed to really finish off the API surface.
