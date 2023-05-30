@@ -1,3 +1,7 @@
+## v0.0.3
+
+- Updated `Package.swift` to reference C lib `yyjson` directly, since the `tannerdsilva/yyjson` fork was simply a mirror (a fork initially deemed necessary for managing release tags).
+
 ## v0.0.2
 
 - Updated `Package.swift` to use SemVer range for `yyjson` instead of explicit revision hashes.
