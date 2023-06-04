@@ -9,10 +9,31 @@ public struct Decoder {
 	public init(memory:MemoryPool? = nil) {
 		self.memory = memory
 	}
+
+	/// decode a value from a json document
+	/// - parameter type: the type of the value to decode
+	/// - parameter data: the pointer to the json document to decode
+	/// - parameter flags: decoding option flags
+	public func decode<T:Decodable>(_ type:T.Type, from data:UnsafeRawPointer, size:size_t, flags:Flags = Flags()) throws -> T {
+		var errorinfo = yyjson_read_err()
+		let yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, 0, nil, &errorinfo)
+		guard yyjsonDoc != nil && errorinfo.code == 0 else {
+			throw Decoder.Error.documentParseError(Decoder.Error.ParseInfo(readInfo:errorinfo))
+		}
+		defer {
+			yyjson_doc_free(yyjsonDoc)
+		}
+		let getRoot = yyjson_doc_get_root(yyjsonDoc)
+		guard getRoot != nil else {
+			throw Decoder.Error.documentRootError
+		}
+		let decoder = decoder(root:getRoot!)
+		return try T(from:decoder)
+	}
 	
 	/// decode a value from a json document
 	/// - parameter type: the type of the value to decode
-	/// - parameter data: the json document to decode as a utf8 byte array
+	/// - parameter data: the byte array to decode
 	/// - parameter flags: decoding option flags
 	public func decode<T:Decodable>(_ type:T.Type, from data:[UInt8], flags:Flags = Flags()) throws -> T {
 		return try data.withUnsafeBytes { rawBufferPointer -> T in

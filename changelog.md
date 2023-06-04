@@ -1,3 +1,7 @@
+## v0.0.4
+
+- Added decoding variant that uses `from:UnsafeRawPointer, size:size_t` as input.
+
 ## v0.0.3
 
 - Updated `Package.swift` to reference C lib `yyjson` directly, since the `tannerdsilva/yyjson` fork was simply a mirror (a fork initially deemed necessary for managing release tags).
