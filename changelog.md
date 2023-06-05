@@ -1,3 +1,11 @@
+## v0.0.5
+
+- Improvements to `MemoryPool` typealias.
+
+	- Added extension function `maxReadSize` that returns the apropriate maximum buffer size for decoding data of known maximum length.
+
+	- Improved documentation on existing extension function `allocate`
+
 ## v0.0.4
 
 - Added decoding variant that uses `from:UnsafeRawPointer, size:size_t` as input.
