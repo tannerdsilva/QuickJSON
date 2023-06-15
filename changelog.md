@@ -1,3 +1,7 @@
+## v0.0.6
+
+- `MemoryPool.allocate(...)` now throws a `MemoryPool.InitializationError` instead of returning an optional value.
+
 ## v0.0.5
 
 - Improvements to `MemoryPool` typealias.
