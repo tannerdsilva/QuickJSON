@@ -18,7 +18,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		guard yyjson_get_type(root) == YYJSON_TYPE_ARR else {
 			throw Decoder.Error.valueTypeMismatch(Decoder.Error.ValueTypeMismatchInfo(expected: ValueType.arr, found: ValueType(yyjson_get_type(root))))
 		}
-		self.root = root
+		self.root = unsafe_yyjson_get_first(root)
 		self.length = yyjson_arr_size(root)
 	}
 

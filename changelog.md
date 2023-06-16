@@ -1,3 +1,11 @@
+## v0.0.7
+
+- Bugfix: unkeyed decoding containers failed to load the first object within their bounds, causing them to fail immediately.
+
+	- Added test coverage for unkeyed decoding containers.
+	
+- Bugfix: `QuickJSON.Encoder.encode(...)` was returning an array containing a `NUL` byte at the end of every return value. This has been corrected.
+
 ## v0.0.6
 
 - `MemoryPool.allocate(...)` now throws a `MemoryPool.InitializationError` instead of returning an optional value.

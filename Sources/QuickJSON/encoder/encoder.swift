@@ -43,13 +43,21 @@ public struct Encoder {
 				return yyjson_mut_write_opts(newDoc, flags.rawValue, memBod, &outLen, &errInfo)
 			}
 		}
-		guard outputDat != nil && errInfo.code == 0 else {
-			throw Error.memoryAllocationFailure
+		switch outputDat {
+			case nil:
+				throw Error.memoryAllocationFailure
+			default:
+				guard errInfo.code == 0 else {
+					throw Error.assignmentError
+				}
+				guard outLen > 0 else {
+					return []
+				}
+				return Array(unsafeUninitializedCapacity:outLen, initializingWith: { (arrBuff, arrSize) in
+					arrSize = outLen
+					memcpy(arrBuff.baseAddress!, outputDat!, outLen)
+				})
 		}
-		defer {
-			free(outputDat)
-		}
-		return Array(UnsafeBufferPointer(start:outputDat!.withMemoryRebound(to:UInt8.self, capacity:outLen, { $0 }), count:outLen)) + [0 as UInt8]
 	}
 }
 
