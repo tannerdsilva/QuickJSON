@@ -1,3 +1,9 @@
+## v0.0.8
+
+- Bugfix: optimized and completed implementation of MemoryPools.
+
+- Converted `QuickJSON.Encoder` and `QuickJSON.Decoder` to classes.
+
 ## v0.0.7
 
 - Bugfix: unkeyed decoding containers failed to load the first object within their bounds, causing them to fail immediately.

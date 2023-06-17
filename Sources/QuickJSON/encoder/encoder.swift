@@ -3,7 +3,7 @@ import yyjson
 
 /// this is the public interface for the json encoder
 /// - note: this struct is NOT thread safe, and is meant for serialized use only.
-public struct Encoder {
+public class Encoder {
 	/// errors that may occur during encoding
 	public enum Error:Swift.Error {
 		/// the value could not be assigned
@@ -39,9 +39,7 @@ public struct Encoder {
 		if self.memory == nil {
 			outputDat = yyjson_mut_write_opts(newDoc, flags.rawValue, nil, &outLen, &errInfo)
 		} else {
-			outputDat = withUnsafePointer(to:self.memory!) { memBod in
-				return yyjson_mut_write_opts(newDoc, flags.rawValue, memBod, &outLen, &errInfo)
-			}
+			outputDat = yyjson_mut_write_opts(newDoc, flags.rawValue, &self.memory!, &outLen, &errInfo)
 		}
 		switch outputDat {
 			case nil:
