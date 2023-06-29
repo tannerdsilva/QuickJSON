@@ -1,3 +1,7 @@
+## v0.1.1
+
+- Improvements to the unkeyed decoding container. Specific errors are now thrown to handle circumstances where a user of the unkeyed container exceeds the boundaries of the data.
+
 ## v0.1.0
 
 - Unkeyed decoding container no longer increments (moving on to the next item in its bounds) when an error is thrown trying to decode a value.

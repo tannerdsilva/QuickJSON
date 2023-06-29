@@ -69,6 +69,9 @@ public class Decoder {
 extension Decoder {
 	/// errors that can be thrown by the decoder
 	public enum Error:Swift.Error {
+		/// thrown by an unkeyed decoding container when the bounds of the container have been exceeded
+		case contentOverflow
+
 		/// thrown when the decoder encounters a value that is not the type that was expected
 		case valueTypeMismatch(ValueTypeMismatchInfo)
 		
