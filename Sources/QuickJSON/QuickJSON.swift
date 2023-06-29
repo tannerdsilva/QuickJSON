@@ -10,7 +10,7 @@ extension MemoryPool {
 	/// returns the apropriate buffer size for decoding data, provided a given input size and flags.
 	/// - parameter inputSize: the size of the input data
 	/// - parameter flags: the flags to use when decoding
-	/// - returns: the appropriate buffer size for decoding datawi
+	/// - returns: the appropriate buffer size for decoding data
 	public static func maxReadSize(inputSize:size_t, flags:Decoder.Flags) -> size_t {
 		return yyjson_read_max_memory_usage(inputSize, flags.rawValue)
 	}

@@ -18,7 +18,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		guard yyjson_get_type(root) == YYJSON_TYPE_ARR else {
 			throw Decoder.Error.valueTypeMismatch(Decoder.Error.ValueTypeMismatchInfo(expected: ValueType.arr, found: ValueType(yyjson_get_type(root))))
 		}
-		self.root = unsafe_yyjson_get_first(root)
+		self.root = root
 		self.length = yyjson_arr_size(root)
 	}
 
@@ -40,138 +40,121 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a boolean.
 	internal func decode(_ type:Bool.Type) throws -> Bool {
-		defer {
-			self.increment()
-		}
-		return try root.decodeBool()
+		let decoded = try root.decodeBool()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a string.
 	internal func decode(_ type:String.Type) throws -> String {
-		defer {
-			self.increment()
-		}
-		return try root.decodeString()
+		let decoded = try root.decodeString()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a double.
 	internal func decode(_ type:Double.Type) throws -> Double {
-		defer {
-			self.increment()
-		}
-		return try root.decodeDouble()
+		let decoded = try root.decodeDouble()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a float.
 	internal func decode(_ type:Float.Type) throws -> Float {
-		defer {
-			self.increment()
-		}
-		return try root.decodeFloat()
+		let decoded = try root.decodeFloat()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as an int.
 	internal func decode(_ type:Int.Type) throws -> Int {
-		defer {
-			self.increment()
-		}
-		return try root.decodeInt()
+		let decoded = try root.decodeInt()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as an int8.
 	internal func decode(_ type:Int8.Type) throws -> Int8 {
-		defer {
-			self.increment()
-		}
-		return try root.decodeInt8()
+		let decoded = try root.decodeInt8()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as an int16.
 	internal func decode(_ type:Int16.Type) throws -> Int16 {
-		defer {
-			self.increment()
-		}
-		return try root.decodeInt16()
+		let decoded = try root.decodeInt16()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as an int32.
 	internal func decode(_ type:Int32.Type) throws -> Int32 {
-		defer {
-			self.increment()
-		}
-		return try root.decodeInt32()
+		let decoded = try root.decodeInt32()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as an int64.
 	internal func decode(_ type:Int64.Type) throws -> Int64 {
-		defer {
-			self.increment()
-		}
-		return try root.decodeInt64()
+		let decoded = try root.decodeInt64()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a uint.
 	internal func decode(_ type:UInt.Type) throws -> UInt {
-		defer {
-			self.increment()
-		}
-		return try root.decodeUInt()
+		let decoded = try root.decodeUInt()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a uint8.
 	internal func decode(_ type:UInt8.Type) throws -> UInt8 {
-		defer {
-			self.increment()
-		}
-		return try root.decodeUInt8()
+		let decoded = try root.decodeUInt8()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a uint16.
 	internal func decode(_ type:UInt16.Type) throws -> UInt16 {
-		defer {
-			self.increment()
-		}
-		return try root.decodeUInt16()
+		let decoded = try root.decodeUInt16()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a uint32.
 	internal func decode(_ type:UInt32.Type) throws -> UInt32 {
-		defer {
-			self.increment()
-		}
-		return try root.decodeUInt32()
+		let decoded = try root.decodeUInt32()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a uint64.
 	internal func decode(_ type:UInt64.Type) throws -> UInt64 {
-		defer {
-			self.increment()
-		}
-		return try root.decodeUInt64()
+		let decoded = try root.decodeUInt64()
+		self.increment()
+		return decoded
 	}
 
 	/// decodes a given decodable type from the next value in the container.
 	internal func decode<T>(_ type:T.Type) throws -> T where T:Decodable {
-		defer {
-			self.increment()
-		}
-		return try T(from: decoder(root: root))
+		let decoded = try T(from: decoder(root: root))
+		self.increment()
+		return decoded
 	}
 
 	/// decodes the next value in the container as a keyed container.
 	internal func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
-		defer {
-			self.increment()
-		}
-		return KeyedDecodingContainer(try dc_keyed(root:self.root))
+		let decoded = KeyedDecodingContainer<NestedKey>(try dc_keyed(root:self.root))
+		self.increment()
+		return decoded
 	}
 
 	/// decode the next value in the container as an unkeyed container.
 	internal func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
-		defer {
-			self.increment()
-		}
-		return try dc_unkeyed(root:self.root)
+		let decoded = try dc_unkeyed(root: self.root)
+		self.increment()
+		return decoded
 	}
 
 	// required by swift.

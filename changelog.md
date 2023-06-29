@@ -1,3 +1,7 @@
+## v0.1.0
+
+- Unkeyed decoding container no longer increments (moving on to the next item in its bounds) when an error is thrown trying to decode a value.
+
 ## v0.0.8
 
 - Bugfix: optimized and completed implementation of MemoryPools.
