@@ -1,7 +1,9 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
-internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
+internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
+
+	/// helps this struct keep track of its internal state
 	private enum ParseState {
 		/// there is content in the container
 		/// - argument 1: the next object in the array to consume
@@ -10,6 +12,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		/// the end of the array has been reached
 		case end
 	}
+	
 	private var state:ParseState
 	internal let length:size_t
 	internal var currentIndex:size_t = 0
@@ -35,7 +38,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	// called every time a value is decoded. 
-	private func increment() {
+	private mutating func increment() {
 		switch self.state {
 			case .end:
 			fatalError("increment called when at end of container")
@@ -51,7 +54,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// returns true if the next value in the container is null.
-	internal func decodeNil() throws -> Bool {
+	internal mutating func decodeNil() throws -> Bool {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -63,7 +66,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a boolean.
-	internal func decode(_ type:Bool.Type) throws -> Bool {
+	internal mutating func decode(_ type:Bool.Type) throws -> Bool {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -75,7 +78,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a string.
-	internal func decode(_ type:String.Type) throws -> String {
+	internal mutating func decode(_ type:String.Type) throws -> String {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -87,7 +90,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a double.
-	internal func decode(_ type:Double.Type) throws -> Double {
+	internal mutating func decode(_ type:Double.Type) throws -> Double {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -99,7 +102,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a float.
-	internal func decode(_ type:Float.Type) throws -> Float {
+	internal mutating func decode(_ type:Float.Type) throws -> Float {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -111,7 +114,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as an int.
-	internal func decode(_ type:Int.Type) throws -> Int {
+	internal mutating func decode(_ type:Int.Type) throws -> Int {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -123,7 +126,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as an int8.
-	internal func decode(_ type:Int8.Type) throws -> Int8 {
+	internal mutating func decode(_ type:Int8.Type) throws -> Int8 {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -135,7 +138,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as an int16.
-	internal func decode(_ type:Int16.Type) throws -> Int16 {
+	internal mutating func decode(_ type:Int16.Type) throws -> Int16 {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -147,7 +150,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as an int32.
-	internal func decode(_ type:Int32.Type) throws -> Int32 {
+	internal mutating func decode(_ type:Int32.Type) throws -> Int32 {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -159,7 +162,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as an int64.
-	internal func decode(_ type:Int64.Type) throws -> Int64 {
+	internal mutating func decode(_ type:Int64.Type) throws -> Int64 {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -171,7 +174,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a uint.
-	internal func decode(_ type:UInt.Type) throws -> UInt {
+	internal mutating func decode(_ type:UInt.Type) throws -> UInt {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -183,7 +186,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a uint8.
-	internal func decode(_ type:UInt8.Type) throws -> UInt8 {
+	internal mutating func decode(_ type:UInt8.Type) throws -> UInt8 {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -195,7 +198,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a uint16.
-	internal func decode(_ type:UInt16.Type) throws -> UInt16 {
+	internal mutating func decode(_ type:UInt16.Type) throws -> UInt16 {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -207,7 +210,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a uint32.
-	internal func decode(_ type:UInt32.Type) throws -> UInt32 {
+	internal mutating func decode(_ type:UInt32.Type) throws -> UInt32 {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -219,7 +222,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a uint64.
-	internal func decode(_ type:UInt64.Type) throws -> UInt64 {
+	internal mutating func decode(_ type:UInt64.Type) throws -> UInt64 {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -231,7 +234,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes a given decodable type from the next value in the container.
-	internal func decode<T>(_ type:T.Type) throws -> T where T:Decodable {
+	internal mutating func decode<T>(_ type:T.Type) throws -> T where T:Decodable {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -243,7 +246,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decodes the next value in the container as a keyed container.
-	internal func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
+	internal mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -255,7 +258,7 @@ internal final class dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	}
 
 	/// decode the next value in the container as an unkeyed container.
-	internal func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
+	internal mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow

@@ -1,9 +1,18 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+#if DEBUG
+import Logging
+#endif
+
 /// this is the public interface for the json encoder
 /// - note: this struct is NOT thread safe, and is meant for serialized use only.
-public class Encoder {
+public struct Encoder {
+
+	#if DEBUG
+	internal static let logger = makeDefaultLogger(label:"com.tannersilva.quickjson.encoder", logLevel:.debug)
+	#endif
+
 	/// errors that may occur during encoding
 	public enum Error:Swift.Error {
 		/// the value could not be assigned
@@ -18,6 +27,12 @@ public class Encoder {
 	/// create a new encoder.
 	/// - parameter memory: the memory pool that this encoder will use. _**note**_: if no memory pool is provided, the encoder will use the default memory pool.
 	public init(_ memory:MemoryPool? = nil) {
+		#if DEBUG
+		Self.logger.debug("enter: Encoder.init()")
+		defer {
+			Self.logger.trace("exit: Encoder.init()")
+		}
+		#endif
 		self.memory = memory
 	}
 
@@ -25,6 +40,13 @@ public class Encoder {
 	/// - parameter object: the object to encode.
 	/// - parameter flags: the option flags to use for this encoding.
 	public func encode<T:Encodable>(_ object:T, flags:Flags = Flags()) throws -> [UInt8] {
+		#if DEBUG
+		Self.logger.debug("enter: Encoder.encode(_:flags:)")
+		defer {
+			Self.logger.trace("exit: Encoder.encode(_:flags:)")
+		}
+		#endif
+
 		let newDoc = yyjson_mut_doc_new(nil)
 		guard newDoc != nil else {
 			throw Error.memoryAllocationFailure
@@ -39,7 +61,53 @@ public class Encoder {
 		if self.memory == nil {
 			outputDat = yyjson_mut_write_opts(newDoc, flags.rawValue, nil, &outLen, &errInfo)
 		} else {
-			outputDat = yyjson_mut_write_opts(newDoc, flags.rawValue, &self.memory!, &outLen, &errInfo)
+			outputDat = self.memory!.expose { mem in
+				return yyjson_mut_write_opts(newDoc, flags.rawValue, &mem, &outLen, &errInfo)
+			}
+			
+		}
+		switch outputDat {
+			case nil:
+				throw Error.memoryAllocationFailure
+			default:
+				guard errInfo.code == 0 else {
+					throw Error.assignmentError
+				}
+				guard outLen > 0 else {
+					return []
+				}
+				return Array(unsafeUninitializedCapacity:outLen, initializingWith: { (arrBuff, arrSize) in
+					arrSize = outLen
+					memcpy(arrBuff.baseAddress!, outputDat!, outLen)
+				})
+		}
+	}
+
+	public func encode(flags:Flags, _ encodeHandler:(Swift.Encoder) throws -> Void) throws -> [UInt8] {
+		#if DEBUG
+		Self.logger.debug("enter: Encoder.encode(flags:_:)")
+		defer {
+			Self.logger.trace("exit: Encoder.encode(flags:_:)")
+		}
+		#endif
+
+		let newDoc = yyjson_mut_doc_new(nil)
+		guard newDoc != nil else {
+			throw Error.memoryAllocationFailure
+		}
+		defer {
+			yyjson_mut_doc_free(newDoc)
+		}
+		try encodeHandler(encoder_from_root(doc:newDoc!))
+		var outLen = 0
+		var errInfo = yyjson_write_err()
+		let outputDat:UnsafeMutablePointer<CChar>?
+		if self.memory == nil {
+			outputDat = yyjson_mut_write_opts(newDoc, flags.rawValue, nil, &outLen, &errInfo)
+		} else {
+			outputDat = self.memory!.expose { mem in
+				return yyjson_mut_write_opts(newDoc, flags.rawValue, &mem, &outLen, &errInfo)
+			}
 		}
 		switch outputDat {
 			case nil:
@@ -82,11 +150,24 @@ internal struct encoder_from_root:Swift.Encoder {
 	
 	/// internal initializer
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>) {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_root.init()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_root.init()")
+		}
+		#endif
 		self.doc = doc
 	}
 
 	/// retrieve a keyed container for this encoder
 	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key :CodingKey {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_root.container(keyedBy:)")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_root.container(keyedBy:)")
+		}
+		#endif
+
 		let getObject = yyjson_mut_obj(doc)!
 		yyjson_mut_doc_set_root(doc, getObject)
 		return KeyedEncodingContainer(ec_keyed(doc:self.doc, root:getObject))
@@ -94,6 +175,13 @@ internal struct encoder_from_root:Swift.Encoder {
 
 	/// retrieve a unkeyed container for this encoder
 	internal func unkeyedContainer() -> UnkeyedEncodingContainer {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_root.unkeyedContainer()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_root.unkeyedContainer()")
+		}
+		#endif
+
 		let getObject = yyjson_mut_arr(doc)!
 		yyjson_mut_doc_set_root(doc, getObject)
 		return ec_unkeyed(doc:self.doc, root:getObject)
@@ -101,6 +189,13 @@ internal struct encoder_from_root:Swift.Encoder {
 
 	/// retrieve the single value container for this encoder
 	internal func singleValueContainer() -> SingleValueEncodingContainer {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_root.singleValueContainer()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_root.singleValueContainer()")
+		}
+		#endif
+
 		return ec_single_from_root(doc:doc)
 	}
 
@@ -123,12 +218,26 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 	private let doc:UnsafeMutablePointer<yyjson_mut_doc>
 	private let arr:UnsafeMutablePointer<yyjson_mut_val>
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>) {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_unkeyed_container.init()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_unkeyed_container.init()")
+		}
+		#endif
+
 		self.doc = doc
 		self.arr = arr
 	}
 
 	/// retrieve a keyed container for this encoder
 	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key :CodingKey {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_unkeyed_container.container(keyedBy:)")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_unkeyed_container.container(keyedBy:)")
+		}
+		#endif
+
 		// create the new key-value container
 		let newObject = yyjson_mut_obj(doc)!
 
@@ -140,6 +249,13 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 
 	/// retrieve an unkeyed container for this encoder
 	internal func unkeyedContainer() -> UnkeyedEncodingContainer {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_unkeyed_container.unkeyedContainer()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_unkeyed_container.unkeyedContainer()")
+		}
+		#endif
+
 		// create the array container
 		let newObject = yyjson_mut_arr(doc)!
 
@@ -151,6 +267,13 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 
 	/// retrieve the single value container for this encoder
 	internal func singleValueContainer() -> SingleValueEncodingContainer {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_unkeyed_container.singleValueContainer()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_unkeyed_container.singleValueContainer()")
+		}
+		#endif
+
 		return ec_single_from_unkeyed_container(doc:doc, arr:arr)
 	}
 
@@ -175,6 +298,12 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 	private let assignKey:UnsafeMutablePointer<yyjson_mut_val>
 	
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey] = []) {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_keyed_container.init()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_keyed_container.init()")
+		}
+		#endif
 		self.doc = doc
 		self.obj = obj
 		self.assignKey = assignKey
@@ -182,6 +311,13 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 
 	/// retrieve a keyed container for this encoder
 	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key:CodingKey {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_keyed_container.container(keyedBy:)")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_keyed_container.container(keyedBy:)")
+		}
+		#endif
+
 		// create the new key-value container
 		let newObject = yyjson_mut_obj(doc)!
 
@@ -193,6 +329,13 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 
 	/// retrieve an unkeyed container for this encoder
 	internal func unkeyedContainer() -> UnkeyedEncodingContainer {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_keyed_container.unkeyedContainer()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_keyed_container.unkeyedContainer()")
+		}
+		#endif
+
 		// create the array container
 		let newObject = yyjson_mut_arr(doc)!
 
@@ -204,6 +347,13 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 
 	/// retrieve the single value container for this encoder
 	internal func singleValueContainer() -> SingleValueEncodingContainer {
+		#if DEBUG
+		Encoder.logger.debug("enter: encoder_from_keyed_container.singleValueContainer()")
+		defer {
+			Encoder.logger.trace("exit: encoder_from_keyed_container.singleValueContainer()")
+		}
+		#endif
+		
 		return ec_single_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey)
 	}
 

@@ -1,32 +1,14 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
-/// MemoryPool
-public typealias MemoryPool = yyjson_alc
-extension MemoryPool {
-
-	public struct InitializationError:Swift.Error {}
-
-	/// returns the apropriate buffer size for decoding data, provided a given input size and flags.
-	/// - parameter inputSize: the size of the input data
-	/// - parameter flags: the flags to use when decoding
-	/// - returns: the appropriate buffer size for decoding data
-	public static func maxReadSize(inputSize:size_t, flags:Decoder.Flags) -> size_t {
-		return yyjson_read_max_memory_usage(inputSize, flags.rawValue)
-	}
-
-	/// create a new static-sized memory pool.
-	/// - parameter staticSize: the size of the static buffer. when decoding data, this should ideally be a value returned by ``maxReadSize(inputSize:flags:)``
-	/// - parameter staticBuffer: the static buffer to use
-	/// - returns: a new memory pool, or `nil` if the pool could not be created
-	public static func allocate(staticSize:size_t, staticBuffer:UnsafeMutableRawPointer) throws -> MemoryPool {
-		var initialValue = yyjson_alc()
-		guard yyjson_alc_pool_init(&initialValue, staticBuffer, staticSize) else {
-			throw InitializationError()
-		}
-		return initialValue
-	}
+#if DEBUG
+import Logging
+internal func makeDefaultLogger(label:String, logLevel:Logger.Level) -> Logger {
+	var newLogger = Logger(label:label)
+	newLogger.logLevel = logLevel
+	return newLogger
 }
+#endif
 
 /// represents various JSON types. this is primarily used to describe type mismatches.
 public enum ValueType:UInt8 {

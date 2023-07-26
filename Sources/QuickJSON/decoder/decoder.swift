@@ -1,8 +1,13 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
-public class Decoder {
-	private var memory:MemoryPool? = nil
+public struct Decoder {
+
+	#if DEBUG
+	internal static let logger = makeDefaultLogger(label:"com.tannersilva.quickjson.decoder", logLevel:.debug)
+	#endif
+
+	private let memory:MemoryPool?
 	
 	/// create a new decoder.
 	/// - parameter memory:the memory pool that this decoder will use. _**note**_:if no memory pool is provided, the decoder will use the default memory pool.
@@ -18,9 +23,11 @@ public class Decoder {
 		var errorinfo = yyjson_read_err()
 		let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>? 
 		if memory == nil {
-			yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, 0, nil, &errorinfo)
+			yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, nil, &errorinfo)
 		} else {
-			yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, 0, &self.memory!, &errorinfo)
+			yyjsonDoc = self.memory!.expose { mem in
+				return yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, &mem, &errorinfo)
+			}
 		}
 		guard yyjsonDoc != nil && errorinfo.code == 0 else {
 			throw Decoder.Error.documentParseError(Decoder.Error.ParseInfo(readInfo:errorinfo))
@@ -42,26 +49,7 @@ public class Decoder {
 	/// - parameter flags: decoding option flags
 	public func decode<T:Decodable>(_ type:T.Type, from data:[UInt8], flags:Flags = Flags()) throws -> T {
 		return try data.withUnsafeBytes { rawBufferPointer -> T in
-			let bufferPointer = rawBufferPointer.bindMemory(to:CChar.self)
-			var errorinfo = yyjson_read_err()
-			let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
-			if memory == nil {
-				yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:bufferPointer.baseAddress!), size_t(bufferPointer.count), 0, nil, &errorinfo)
-			} else {
-				yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:bufferPointer.baseAddress!), size_t(bufferPointer.count), 0, &self.memory!, &errorinfo)
-			}
-			guard yyjsonDoc != nil && errorinfo.code == 0 else {
-				throw Decoder.Error.documentParseError(Decoder.Error.ParseInfo(readInfo:errorinfo))
-			}
-			defer {
-				yyjson_doc_free(yyjsonDoc)
-			}
-			let getRoot = yyjson_doc_get_root(yyjsonDoc)
-			guard getRoot != nil else {
-				throw Decoder.Error.documentRootError
-			}
-			let decoder = decoder(root:getRoot!)
-			return try T(from:decoder)
+			return try decode(type, from:rawBufferPointer.baseAddress!, size:rawBufferPointer.count, flags:flags)
 		}
 	}
 }

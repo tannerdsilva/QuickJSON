@@ -1,6 +1,7 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+/// an encoding container designed specifically for encoding single values into an unkeyed container.
 internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContainer {
 	private let doc:UnsafeMutablePointer<yyjson_mut_doc>
 	private let arr:UnsafeMutablePointer<yyjson_mut_val>
@@ -9,12 +10,26 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// - parameter doc: the document this container belongs to
 	/// - parameter arr: the array this container will assign values to
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>) {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.init()")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.init()")
+		}
+		#endif
+
 		self.doc = doc
 		self.arr = arr
 	}
 
 	/// encode a nil value
 	internal func encodeNil() throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encodeNil()")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encodeNil()")
+		}
+		#endif
+
 		let nilVal = yyjson_mut_null(doc)
 		guard nilVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -24,6 +39,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a bool value
 	internal func encode(_ value:Bool) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+		
 		let boolVal = yyjson_mut_bool(doc, value)
 		guard boolVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -33,6 +55,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a string value
 	internal func encode(_ value:String) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+		
 		let stringVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
 		guard stringVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -42,6 +71,12 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a double value
 	internal func encode(_ value:Double) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
 		let doubleVal = yyjson_mut_real(doc, value)
 		guard doubleVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -51,6 +86,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a float value
 	internal func encode(_ value:Float) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+		
 		let floatVal = yyjson_mut_real(doc, Double(value))
 		guard floatVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -60,6 +102,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode an int value
 	internal func encode(_ value:Int) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -69,6 +118,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode an int8 value
 	internal func encode(_ value:Int8) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -78,6 +134,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode an int16 value
 	internal func encode(_ value:Int16) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+		
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -87,6 +150,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode an int32 value
 	internal func encode(_ value:Int32) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -96,6 +166,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode an int64 value
 	internal func encode(_ value:Int64) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_int(doc, value)
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -105,6 +182,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a uint value
 	internal func encode(_ value:UInt) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -114,6 +198,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a uint8 value
 	internal func encode(_ value:UInt8) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -123,6 +214,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a uint16 value
 	internal func encode(_ value:UInt16) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -132,6 +230,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a uint32 value
 	internal func encode(_ value:UInt32) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -141,6 +246,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode a uint64 value
 	internal func encode(_ value:UInt64) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, value)
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -150,6 +262,13 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	/// encode an encodable value
 	internal func encode<T>(_ value:T) throws where T:Encodable {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+		}
+		#endif
+
 		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:arr))
 	}
 
@@ -161,8 +280,7 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	}
 }
 
-// a single value container.
-// - note: this is used to encode a single value into a keyed container.
+// a single value encoding container that is meant specifically for encoding single values and their keys into a keyed encoding container.
 internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContainer {
 	private let doc:UnsafeMutablePointer<yyjson_mut_doc>
 	private let obj:UnsafeMutablePointer<yyjson_mut_val>
@@ -173,6 +291,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// - parameter obj: the object to encode into
 	/// - parameter assignKey: the key to use to assign the single value to the parent object after it is encoded
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>) {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.init()")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.init()")
+		}
+		#endif
+		
 		self.doc = doc
 		self.obj = obj
 		self.assignKey = assignKey
@@ -180,6 +305,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a nil value
 	internal func encodeNil() throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encodeNil()")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encodeNil()")
+		}
+		#endif
+
 		// create the new value
 		let newVal = yyjson_mut_null(doc)
 		guard newVal != nil else {
@@ -194,6 +326,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a bool value
 	internal func encode(_ value:Bool) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let newVal = yyjson_mut_bool(doc, value)
 		guard newVal != nil else {
@@ -208,6 +347,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a string value
 	internal func encode(_ value:String) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let stringVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
 		guard stringVal != nil else {
@@ -222,6 +368,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a double value
 	internal func encode(_ value:Double) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let doubleVal = yyjson_mut_real(doc, value)
 		guard doubleVal != nil else {
@@ -236,6 +389,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a float value
 	internal func encode(_ value:Float) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let floatVal = yyjson_mut_real(doc, Double(value))
 		guard floatVal != nil else {
@@ -250,6 +410,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a int value
 	internal func encode(_ value:Int) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
@@ -264,6 +431,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a int8 value
 	internal func encode(_ value:Int8) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
@@ -278,6 +452,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a int16 value
 	internal func encode(_ value:Int16) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+		
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
@@ -292,6 +473,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a int32 value
 	internal func encode(_ value:Int32) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
@@ -306,6 +494,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a int64 value
 	internal func encode(_ value:Int64) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+		
 		// create the new value
 		let intVal = yyjson_mut_int(doc, value)
 		guard intVal != nil else {
@@ -320,6 +515,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a uint value
 	internal func encode(_ value:UInt) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
@@ -334,6 +536,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a uint8 value
 	internal func encode(_ value:UInt8) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -346,6 +555,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a uint16 value
 	internal func encode(_ value:UInt16) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -359,6 +575,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a uint32 value
 	internal func encode(_ value:UInt32) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -372,6 +595,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode a uint64 value
 	internal func encode(_ value:UInt64) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, value)
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -385,6 +615,12 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 	/// encode an encodable value
 	internal func encode<T>(_ value:T) throws where T :Encodable {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+		}
+		#endif
 		try value.encode(to:encoder_from_keyed_container(doc:self.doc, obj:self.obj, assignKey:assignKey, codingPath:self.codingPath))
 	}
 
@@ -396,17 +632,31 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	}
 }
 
-// a single value container for encoding values into an array
+/// a single value encoding container that is meant specifically for applying a single value to the "root" of the json document.
 internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	private let doc:UnsafeMutablePointer<yyjson_mut_doc>
 
 	/// initialize a new single value container that encodes directly to the root of the document
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>) {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.init()")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.init()")
+		}
+		#endif
+
 		self.doc = doc
 	}
 
 	/// encode a nil value
 	internal func encodeNil() throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encodeNil()")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encodeNil()")
+		}
+		#endif
+
 		// create the new value
 		let newVal = yyjson_mut_null(doc)
 		guard newVal != nil else {
@@ -419,6 +669,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a boolean value
 	internal func encode(_ value:Bool) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let newVal = yyjson_mut_bool(doc, value)
 		guard newVal != nil else {
@@ -431,6 +688,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a string value
 	internal func encode(_ value:String) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let stringVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
 		guard stringVal != nil else {
@@ -443,6 +707,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a double value
 	internal func encode(_ value:Double) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let doubleVal = yyjson_mut_real(doc, value)
 		guard doubleVal != nil else {
@@ -455,6 +726,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a float value
 	internal func encode(_ value:Float) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let floatVal = yyjson_mut_real(doc, Double(value))
 		guard floatVal != nil else {
@@ -467,6 +745,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode an int value
 	internal func encode(_ value:Int) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
@@ -479,6 +764,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode an int8 value
 	internal func encode(_ value:Int8) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
@@ -491,6 +783,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode an int16 value
 	internal func encode(_ value:Int16) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
@@ -503,6 +802,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode an int32 value
 	internal func encode(_ value:Int32) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
@@ -515,6 +821,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode an int64 value
 	internal func encode(_ value:Int64) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_int(doc, value)
 		guard intVal != nil else {
@@ -527,6 +840,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a uint value
 	internal func encode(_ value:UInt) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		// create the new value
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
@@ -539,6 +859,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a uint8 value
 	internal func encode(_ value:UInt8) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -550,6 +877,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a uint16 value
 	internal func encode(_ value:UInt16) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -561,6 +895,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a uint32 value
 	internal func encode(_ value:UInt32) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+		
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -572,6 +913,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode a uint64 value
 	internal func encode(_ value:UInt64) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+		
 		let intVal = yyjson_mut_uint(doc, value)
 		guard intVal != nil else {
 			throw Encoder.Error.assignmentError
@@ -583,6 +931,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	/// encode an encodable value
 	internal func encode<T>(_ value:T) throws where T :Encodable {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_single_from_root.encode(_:)")
+		defer {
+			Encoder.logger.trace("exit: ec_single_from_root.encode(_:)")
+		}
+		#endif
+
 		try value.encode(to:encoder_from_root(doc:self.doc))
 	}
 

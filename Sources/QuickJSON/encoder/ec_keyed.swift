@@ -19,6 +19,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode a null value for the given key
 	internal func encodeNil(forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encodeNil(forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encodeNil(forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -30,6 +37,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode a boolean value for the given key
 	internal func encode(_ value:Bool, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+		
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -41,6 +55,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:String, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -52,6 +73,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode a double value for the given key
 	internal func encode(_ value:Double, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -63,6 +91,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode a float value for the given key
 	internal func encode(_ value:Float, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -74,6 +109,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+		
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -85,6 +127,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int8, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -96,6 +145,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int16, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -108,6 +164,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int32, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+		
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -119,6 +182,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int64, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -130,6 +200,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -141,6 +218,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt8, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -152,6 +236,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt16, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -163,6 +254,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt32, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -174,6 +272,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt64, forKey key:K) throws {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = key.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
 		}
@@ -185,6 +290,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// encode a float value for the given key
 	internal func encode<T>(_ value:T, forKey inputKey:K) throws where T :Encodable {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+		}
+		#endif
+
 		let key = inputKey.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, inputKey.stringValue.utf8.count)!
 		}
@@ -193,6 +305,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// returns a keyed container for the given key
 	internal func nestedContainer<NestedKey>(keyedBy keyType:NestedKey.Type, forKey inputKey:K) -> KeyedEncodingContainer<NestedKey> where NestedKey :CodingKey {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.nestedContainer(keyedBy:forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.nestedContainer(keyedBy:forKey:)")
+		}
+		#endif
+		
 		let newObj = yyjson_mut_obj(doc)!
 		assert(yyjson_mut_arr_append(self.root, newObj) == true)
 		return KeyedEncodingContainer(ec_keyed<NestedKey>(doc:doc, root:newObj))
@@ -200,6 +319,13 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	/// returns an unkeyed container for the given key
 	internal func nestedUnkeyedContainer(forKey inputKey:K) -> UnkeyedEncodingContainer {
+		#if DEBUG
+		Encoder.logger.debug("enter: ec_keyed.nestedUnkeyedContainer(forKey:)")
+		defer {
+			Encoder.logger.trace("exit: ec_keyed.nestedUnkeyedContainer(forKey:)")
+		}
+		#endif
+		
 		let key = inputKey.stringValue.withCString { (cstr) in
 			return yyjson_mut_strncpy(doc, cstr, inputKey.stringValue.utf8.count)!
 		}

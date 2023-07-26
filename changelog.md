@@ -1,3 +1,9 @@
+## v1.0.0
+
+- Completely new `MemoryPool`. No longer a typealias for yyjson_alc...which is now abstracted from the developer. A simple call to the `MemoryPool` initializer is all that is needed to guarantee safe memory use.
+
+- Bugfix: decoding flags were not being passed into yyjson.
+
 ## v0.1.1
 
 - Improvements to the unkeyed decoding container. Specific errors are now thrown to handle circumstances where a user of the unkeyed container exceeds the boundaries of the data.
