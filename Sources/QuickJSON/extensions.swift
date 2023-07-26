@@ -1,6 +1,30 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+extension UnsafeMutablePointer where Pointee == yyjson_mut_doc {
+	/// export the json document as a byte array
+	internal func exportDocumentBytes(flags:Encoding.Flags) throws -> [UInt8] {
+		var outLen = 0
+		var errInfo = yyjson_write_err()
+		let outputDat = yyjson_mut_write_opts(self, flags.rawValue, nil, &outLen, &errInfo)
+		switch outputDat {
+			case nil:
+				throw Encoding.Error.memoryAllocationFailure
+			default:
+				guard errInfo.code == 0 else {
+					throw Encoding.Error.assignmentError
+				}
+				guard outLen > 0 else {
+					return []
+				}
+				return Array(unsafeUninitializedCapacity:outLen, initializingWith: { (arrBuff, arrSize) in
+					arrSize = outLen
+					memcpy(arrBuff.baseAddress!, outputDat!, outLen)
+				})
+		}
+	}
+}
+
 // decoding extensions help prevent code duplication across the various decoding containers.
 extension UnsafeMutablePointer where Pointee == yyjson_val {
 	/// returns true if the value is nil

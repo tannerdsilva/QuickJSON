@@ -1,72 +1,88 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+#if QUICKJSON_SHOULDLOG
+import Logging
+#endif
+
 /// an unkeyed encoding container.
 internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 	private let doc:UnsafeMutablePointer<yyjson_mut_doc>
 	private let root:UnsafeMutablePointer<yyjson_mut_val>
 	internal var count:Int
 
+	#if QUICKJSON_SHOULDLOG
+	private let logger:Logger
+	private let logLevel:Logger.Level
 	/// initializes a new unkeyed container
 	/// - parameter doc: the document that this container is writing to
 	/// - parameter root: the root object of the json document. this is where the container will write its keys and values to.
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>) {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.init()")
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logger.Level) {
+		let iid = UInt16.random(in:UInt16.min...UInt16.max)
+		var buildLogger = Encoding.logger
+		buildLogger[metadataKey: "iid"] = "\(iid)"
+		self.logger = buildLogger
+		self.logLevel = logLevel
+		buildLogger.debug("enter: ec_unkeyed.init(doc:root:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.init()")
+			buildLogger.trace("exit: ec_unkeyed.init(doc:root:)")
 		}
-		#endif
-
 		self.doc = doc
 		self.root = root
 		self.count = 0
 	}
+	#else
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>) {
+		self.doc = doc
+		self.root = root
+		self.count = 0
+	}
+	#endif
 
 	/// append a null value into the container
 	internal mutating func encodeNil() throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encodeNil()")
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: ec_unkeyed.encodeNil()")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encodeNil()")
+			logger.trace("exit: ec_unkeyed.encodeNil()")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_null(doc)
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a bool value into the container
 	internal mutating func encode(_ value:Bool) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 
 		let newVal = yyjson_mut_bool(doc, value)
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a nested keyed container into the container
 	internal mutating func nestedContainer<NestedKey>(keyedBy keyType:NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey :CodingKey {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.nestedContainer(keyedBy:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.nestedContainer(keyedBy:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.nestedContainer(keyedBy:)")
+			self.logger.trace("exit: ec_unkeyed.nestedContainer(keyedBy:)")
 		}
 		#endif
 
@@ -78,10 +94,10 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 
 	/// append a nested unkeyed container into the container
 	internal mutating func nestedUnkeyedContainer() -> UnkeyedEncodingContainer {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.nestedUnkeyedContainer()")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.nestedUnkeyedContainer()")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.nestedUnkeyedContainer()")
+			self.logger.trace("exit: ec_unkeyed.nestedUnkeyedContainer()")
 		}
 		#endif
 
@@ -93,10 +109,10 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 
 	/// append a codable value into the container
 	internal mutating func encode<T>(_ value:T) throws where T :Encodable {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 
@@ -110,247 +126,247 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 
 	/// append a string value into the container
 	internal mutating func encode(_ value:String) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a double value into the container
 	internal mutating func encode(_ value:Double) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 
 		let newVal = yyjson_mut_real(doc, value)
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a float value into the container
 	internal mutating func encode(_ value:Float) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 
 		let newVal = yyjson_mut_real(doc, Double(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append an int value into the container
 	internal mutating func encode(_ value:Int) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_int(doc, Int64(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append an int8 value into the container
 	internal mutating func encode(_ value:Int8) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_int(doc, Int64(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append an int16 value into the container
 	internal mutating func encode(_ value:Int16) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_int(doc, Int64(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append an int32 value into the container
 	internal mutating func encode(_ value:Int32) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 
 		let newVal = yyjson_mut_int(doc, Int64(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append an int64 value into the container
 	internal mutating func encode(_ value:Int64) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 
 		let newVal = yyjson_mut_int(doc, value)
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a uint value into the container
 	internal mutating func encode(_ value:UInt) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 
 		let newVal = yyjson_mut_uint(doc, UInt64(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a uint8 value into the container
 	internal mutating func encode(_ value:UInt8) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_uint(doc, UInt64(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(self.root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a uint16 value into the container
 	internal mutating func encode(_ value:UInt16) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_uint(doc, UInt64(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(self.root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a uint32 value into the container
 	internal mutating func encode(_ value:UInt32) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_uint(doc, UInt64(value))
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(self.root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}
 
 	/// append a uint64 value into the container
 	internal mutating func encode(_ value:UInt64) throws {
-		#if DEBUG
-		Encoder.logger.debug("enter: ec_unkeyed.encode(_:)")
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: ec_unkeyed.encode(_:)")
 		defer {
-			Encoder.logger.trace("exit: ec_unkeyed.encode(_:)")
+			self.logger.trace("exit: ec_unkeyed.encode(_:)")
 		}
 		#endif
 		
 		let newVal = yyjson_mut_uint(doc, value)
 		guard newVal != nil else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(self.root, newVal) == true else {
-			throw Encoder.Error.assignmentError
+			throw Encoding.Error.assignmentError
 		}
 		self.count += 1
 	}

@@ -1,6 +1,7 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+/// a "pool" of memory that can be used to either encode or decode JSON data.
 public class MemoryPool {
 	/// thrown when `malloc` fails to allocate memory for the memory pool.
 	public struct MemoryAllocationError:Swift.Error  {}

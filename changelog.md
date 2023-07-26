@@ -1,6 +1,18 @@
 ## v1.0.0
 
-- Completely new `MemoryPool`. No longer a typealias for yyjson_alc...which is now abstracted from the developer. A simple call to the `MemoryPool` initializer is all that is needed to guarantee safe memory use.
+- Eliminated `Encoder` and `Decoder` as to not conflict with the names of the native language protocols.
+
+	- Introduction of `QuickJSON.encode()` to take the primary role of encoding data from the outgoing struct.
+
+	- Introduction of `QuickJSON.decode()` to take the primary role of decoding data from the outgoing struct.
+
+- Inclusion of a new build flag that includes descriptive log information when enabled: `QUICKJSON_SHOULDLOG`
+	
+	- Default loggers may be provided for encoding and decoding independently.
+
+	- Log levels can be provided per job.
+
+- Completely reimplemented `MemoryPool` name. No longer a typealias for `yyjson_alc`...which is now abstracted from the developer. A simple call to the `MemoryPool` initializer is all that is needed to guarantee safe memory use.
 
 - Bugfix: decoding flags were not being passed into yyjson.
 
