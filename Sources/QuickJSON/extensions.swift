@@ -1,8 +1,9 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+// an encoding extension to reduce duplicate code to export a json document as a byte array.
 extension UnsafeMutablePointer where Pointee == yyjson_mut_doc {
-	/// export the json document as a byte array
+	/// export the json document as a byte array.
 	internal func exportDocumentBytes(flags:Encoding.Flags) throws -> [UInt8] {
 		var outLen = 0
 		var errInfo = yyjson_write_err()
