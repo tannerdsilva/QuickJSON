@@ -11,7 +11,9 @@ let package = Package(
 	],
 	dependencies: [
 		/// high performance json parsing library
-		.package(url:"https://github.com/ibireme/yyjson.git", "0.7.0"..<"0.8.0"),
+		.package(url:"https://github.com/ibireme/yyjson.git", revision:"0.7.0"),
+
+		/// swift logging (helpful for debugging, not built into release builds)
 		.package(url:"https://github.com/apple/swift-log.git", "1.0.0"..<"2.0.0")
 	],
 	targets: [
@@ -20,13 +22,16 @@ let package = Package(
 			dependencies: [
 				.product(name:"yyjson", package:"yyjson"),
 				.product(name:"Logging", package:"swift-log")
+			],
+			swiftSettings: [
+				.define("QUICKJSON_SHOULDLOG", .when(configuration:.debug))
 			]
 		),
 		.testTarget(
 			name: "QuickJSONTests",
 			dependencies: ["QuickJSON"],
 			swiftSettings: [
-				.define("QUICKJSON_SHOULDLOG")
+				.define("QUICKJSON_SHOULDLOG", .when(configuration:.debug))
 			]
 		),
 	]

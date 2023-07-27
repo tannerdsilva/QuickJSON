@@ -16,11 +16,11 @@ internal struct encoder_from_root:Swift.Encoder {
 	/// initialize the encoder from the root object
 	/// - pararmeter doc: the root object of the json document
 	/// - pararmeter logLevel: the log level to use for this encoder
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logLevel:Logging.Logger.Level) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logLevel:Logging.Logger.Level = .critical) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = 
+		buildLogger.logLevel = logLevel
 		self.logger = buildLogger
 		self.logLevel = logLevel
 		buildLogger.debug("enter: encoder_from_root.init()")
@@ -113,7 +113,7 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
 	private let logLevel:Logging.Logger.Level
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logging.Logger.Level) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logging.Logger.Level = .critical) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
@@ -183,9 +183,9 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 		defer {
 			self.logger.trace("exit: encoder_from_unkeyed_container.singleValueContainer()")
 		}
-		return ec_single_from_unkeyed_container(doc:doc, arr:arr, logLevel:logLevel)
+		return ec_single_from_unkeyed_container(doc:doc, arr:arr, codingPath:[], logLevel:logLevel)
 		#else
-		return ec_single_from_unkeyed_container(doc:doc, arr:arr)
+		return ec_single_from_unkeyed_container(doc:doc, arr:arr, codingPath:[])
 		#endif
 	}
 
@@ -212,7 +212,7 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
 	private let logLevel:Logging.Logger.Level
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level = .critical) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
@@ -289,9 +289,9 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 		#endif
 		
 		#if QUICKJSON_SHOULDLOG
-		return ec_single_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey, logLevel:logLevel)
+		return ec_single_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey, codingPath:[], logLevel:logLevel)
 		#else
-		return ec_single_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey)
+		return ec_single_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey, codingPath: [])
 		#endif
 	}
 

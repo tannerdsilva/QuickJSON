@@ -20,10 +20,11 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 	/// - parameter root: the root object of the json document.
 	/// - parameter logLevel: the log level to use for this container.
 	/// - throws: `Decoding.Error.valueTypeMismatch` if the root object is not an object.
-	internal init(root:UnsafeMutablePointer<yyjson_val>, logLevel:Logging.Logger.Level) throws {
+	internal init(root:UnsafeMutablePointer<yyjson_val>, logLevel:Logging.Logger.Level = .critical) throws {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
+		var buildLogger = Decoding.logger
 		buildLogger[metadataKey:"iid"] = "\(iid)"
+		buildLogger.logLevel = logLevel
 		self.logger = buildLogger
 		self.logLevel = logLevel
 		buildLogger.debug("enter: dc_keyed.init(root:)")

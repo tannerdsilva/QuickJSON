@@ -14,10 +14,11 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	private let logLevel:Logging.Logger.Level
 	/// initialize a single value container 
 	/// - parameter root: the given root object which the value will be decoded from.
-	internal init(root:UnsafeMutablePointer<yyjson_val>, logLevel:Logging.Logger.Level) {
+	internal init(root:UnsafeMutablePointer<yyjson_val>, logLevel:Logging.Logger.Level = .critical) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
+		var buildLogger = Decoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
+		buildLogger.logLevel = logLevel
 		self.logger = buildLogger
 		self.logLevel = logLevel
 		buildLogger.debug("enter: dc_single.init(root:)")
@@ -204,8 +205,10 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 		defer {
 			self.logger.trace("exit: dc_single.decode(_:T.Type)")
 		}
-		#endif
+		return try T(from:decoder(root:root, logLevel:self.logLevel))
+		#else
 		return try T(from:decoder(root:root))
+		#endif
 	}
 
 	// required by swift.

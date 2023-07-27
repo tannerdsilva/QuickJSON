@@ -16,22 +16,22 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// initialize a new single value container from an unkeyed parent.
 	/// - parameter doc: the document this container belongs to
 	/// - parameter arr: the array this container will assign values to
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logging.Logger.Level, codingPath:[CodingKey] = []) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level = .critical) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
+		buildLogger.logLevel = logLevel
 		self.logger = buildLogger
 		self.logLevel = logLevel
-		buildLogger.debug("enter: ec_single_from_unkeyed_container.init()")
+		buildLogger.debug("enter: ec_single_from_unkeyed_container.init(doc:arr:codingPath:)")
 		defer {
-			buildLogger.trace("exit: ec_single_from_unkeyed_container.init()")
+			buildLogger.trace("exit: ec_single_from_unkeyed_container.init(doc:arr:codingPath:)")
 		}
-
 		self.doc = doc
 		self.arr = arr
 	}
 	#else
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey]) {
 		self.doc = doc
 		self.arr = arr
 	}
@@ -283,9 +283,10 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		defer {
 			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
 		}
-		#endif
-
+		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:arr, logLevel:self.logLevel))
+		#else
 		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:arr))
+		#endif
 	}
 
 	// required by swift. unused.
@@ -310,10 +311,11 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// - parameter doc: the document to encode into
 	/// - parameter obj: the object to encode into
 	/// - parameter assignKey: the key to use to assign the single value to the parent object after it is encoded
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logging.Logger.Level, codingPath:[CodingKey] = []) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level = .critical) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
+		buildLogger.logLevel = logLevel
 		self.logger = buildLogger
 		self.logLevel = logLevel
 		buildLogger.debug("enter: ec_single_from_keyed_container.init()")
@@ -325,7 +327,7 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		self.assignKey = assignKey
 	}
 	#else
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey]) {
 		self.doc = doc
 		self.obj = obj
 		self.assignKey = assignKey
@@ -671,14 +673,16 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	private let logger:Logger
 	private let logLevel:Logging.Logger.Level
 	/// initialize a new single value container that encodes directly to the root of the document
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logLevel:Logging.Logger.Level = .critical) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
+		buildLogger.logLevel = logLevel
 		self.logger = buildLogger
-		buildLogger.debug("enter: ec_single_from_root.init()")
+		self.logLevel = logLevel
+		buildLogger.debug("enter: ec_single_from_root.init(doc:)")
 		defer {
-			buildLogger.trace("exit: ec_single_from_root.init()")
+			buildLogger.trace("exit: ec_single_from_root.init(doc:)")
 		}
 		self.doc = doc
 	}

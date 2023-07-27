@@ -3,16 +3,17 @@ import yyjson
 
 #if QUICKJSON_SHOULDLOG
 import Logging
+/// the default logger for quickjson.
 internal func makeDefaultLogger(label:String, logLevel:Logger.Level) -> Logger {
 	var newLogger = Logger(label:label)
 	newLogger.logLevel = logLevel
+	newLogger.notice("quickjson was built with QUICKJSON_SHOULDLOG. this option enables the internal logging system in QuickJSON. TO ENSURE BEST PERFORMANCE FOR USERS, only enable this option during development.")
 	return newLogger
 }
-
-///	indicates if the current build of quickjson was compiled with logging enabled.
+///	indicates if the current build of quickjson was compiled with logging enabled. this will indicate `true` if `QUICKJSON_SHOULDLOG` is defined.
 public let loggingEnabled = true
 #else
-///	indicates if the current build of quickjson was compiled with logging enabled.
+///	indicates if the current build of quickjson was compiled with logging enabled. this will indicate `true` if `QUICKJSON_SHOULDLOG` is defined.
 public let loggingEnabled = false
 #endif
 
@@ -22,10 +23,10 @@ public let loggingEnabled = false
 /// - parameter object: the object to encode.
 /// - parameter flags: the option flags to use for this encoding. default flag values are used if none are specified.
 /// - parameter logLevel: the log level to use for this encoding.
-public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flags(), memory memconfig:Memory.Configuration = .automatic, logLevel:Logging.Logger.Level) throws -> [UInt8] {
-	Encoding.logger.debug("enter: QuickJSON.encode(_:flags:)")
+public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flags(), memory memconfig:Memory.Configuration = .automatic, logLevel:Logging.Logger.Level = .critical) throws -> [UInt8] {
+	Encoding.logger.debug("enter: QuickJSON.encode(_:T,flags:)")
 	defer {
-		Encoding.logger.trace("exit: QuickJSON.encode(_:flags:)")
+		Encoding.logger.trace("exit: QuickJSON.encode(_:T,flags:,memory:,logLevel:)")
 	}
 
 	let newDoc = yyjson_mut_doc_new(nil)
@@ -37,6 +38,7 @@ public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flag
 	}
 	switch memconfig {
 	case .automatic:
+		try object.encode(to:encoder_from_root(doc:newDoc!, logLevel:logLevel))
 		break
 	case .preallocated(let region):
 		try region.expose { (alc) -> Void in
@@ -97,13 +99,29 @@ public struct Encoding {
 }
 
 // MARK: Decoding Data
+
+#if QUICKJSON_SHOULDLOG
 /// decode a value from a json document
 /// - parameter type: the type of the value to decode
 /// - parameter data: the pointer to the json document to decode
 /// - parameter flags: decoding option flags
-public func decode<T:Decodable>(_ type:T.Type, from data:UnsafeRawPointer, size:size_t, flags:Decoding.Flags = Decoding.Flags()) throws -> T {
+public func decode<T:Decodable>(
+	_ type:T.Type, 
+	from data:UnsafeRawPointer, size:size_t, 
+	flags:Decoding.Flags = Decoding.Flags(), 
+	memory memconfig:Memory.Configuration = .automatic, 
+	logLevel:Logging.Logger.Level = .critical
+) throws -> T {
 	var errorinfo = yyjson_read_err()
-	let yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, nil, &errorinfo)
+	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
+	switch memconfig {
+		case .automatic:
+		yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, nil, &errorinfo)
+		case .preallocated(let region):
+		yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
+			return yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, &alc, &errorinfo)
+		}
+	}
 	guard yyjsonDoc != nil && errorinfo.code == 0 else {
 		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
 	}
@@ -114,9 +132,43 @@ public func decode<T:Decodable>(_ type:T.Type, from data:UnsafeRawPointer, size:
 	guard getRoot != nil else {
 		throw Decoding.Error.documentRootError
 	}
-	let decoder = decoder(root:getRoot!)
-	return try T(from:decoder)
+	return try T(from:decoder(root:getRoot!, logLevel:logLevel))
 }
+#else
+/// decode a value from a json document
+/// - parameter type: the type of the value to decode
+/// - parameter data: the pointer to the json document to decode
+/// - parameter flags: decoding option flags
+public func decode<T:Decodable>(
+	_ type:T.Type, 
+	from data:UnsafeRawPointer, 
+	size:size_t, 
+	flags:Decoding.Flags = Decoding.Flags(), 
+	memory memconfig:Memory.Configuration = .automatic
+) throws -> T {
+	var errorinfo = yyjson_read_err()
+	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
+	switch memconfig {
+		case .automatic:
+		yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, nil, &errorinfo)
+		case .preallocated(let region):
+		yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
+			return yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, &alc, &errorinfo)
+		}
+	}
+	guard yyjsonDoc != nil && errorinfo.code == 0 else {
+		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
+	}
+	defer {
+		yyjson_doc_free(yyjsonDoc)
+	}
+	let getRoot = yyjson_doc_get_root(yyjsonDoc)
+	guard getRoot != nil else {
+		throw Decoding.Error.documentRootError
+	}
+	return try T(from:decoder(root:getRoot!))
+}
+#endif
 
 public struct Decoding {
 	/// errors that can be thrown by the decoder
@@ -161,6 +213,11 @@ public struct Decoding {
 		/// the root value, object, or array of the document could not be found 
 		case documentRootError
 	}
+
+#if QUICKJSON_SHOULDLOG
+	public static var logger = makeDefaultLogger(label:"com.tannersilva.quickjson.decoding", logLevel:.debug)
+	#endif
+
 
 	/// option flags for the decoder
 	public struct Flags:OptionSet {

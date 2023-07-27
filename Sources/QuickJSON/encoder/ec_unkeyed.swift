@@ -17,10 +17,11 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 	/// initializes a new unkeyed container
 	/// - parameter doc: the document that this container is writing to
 	/// - parameter root: the root object of the json document. this is where the container will write its keys and values to.
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logger.Level) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logger.Level = .critical) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
+		buildLogger.logLevel = logLevel
 		self.logger = buildLogger
 		self.logLevel = logLevel
 		buildLogger.debug("enter: ec_unkeyed.init(doc:root:)")
@@ -89,7 +90,12 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		let newObj = yyjson_mut_obj(doc)!
 		assert(yyjson_mut_arr_append(self.root, newObj) == true)
 		self.count += 1
+
+		#if QUICKJSON_SHOULDLOG
+		return KeyedEncodingContainer(ec_keyed(doc:doc, root:newObj, logLevel:self.logLevel))
+		#else
 		return KeyedEncodingContainer(ec_keyed(doc:doc, root:newObj))
+		#endif
 	}
 
 	/// append a nested unkeyed container into the container
@@ -104,7 +110,12 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		let newArr = yyjson_mut_arr(doc)!
 		assert(yyjson_mut_arr_append(self.root, newArr) == true)
 		self.count += 1
+
+		#if QUICKJSON_SHOULDLOG
+		return ec_unkeyed(doc:doc, root:newArr, logLevel:self.logLevel)
+		#else
 		return ec_unkeyed(doc:doc, root:newArr)
+		#endif
 	}
 
 	/// append a codable value into the container
@@ -117,7 +128,11 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		#endif
 
 		do {
+			#if QUICKJSON_SHOULDLOG
+			try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:self.root, logLevel:self.logLevel))
+			#else
 			try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:self.root))
+			#endif
 			self.count += 1
 		} catch let error {
 			throw error

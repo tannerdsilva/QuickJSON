@@ -1,5 +1,6 @@
 import XCTest
 @testable import QuickJSON
+import Logging
 
 final class QuickJSONTests: XCTestCase {
 	struct TestModel: Codable {

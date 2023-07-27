@@ -7,7 +7,7 @@ import Logging
 
 internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
-	/// helps this struct keep track of its internal state
+	/// helps ``dc_unkeyed`` keep track of its internal state
 	private enum ParseState {
 		/// there is content in the container
 		/// - argument 1: the next object in the array to consume
@@ -17,8 +17,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		case end
 	}
 	
+	/// the current state of the container
 	private var state:ParseState
+
+	/// the number of elements in the container
 	internal let length:size_t
+	/// the index of the current element
 	internal var currentIndex:size_t = 0
 	internal var isAtEnd:Bool {
 		get {
@@ -26,9 +30,37 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		}
 	}
 
+	#if QUICKJSON_SHOULDLOG
+	private let logger:Logger
+	private let logLevel:Logger.Level
 	/// initialize an unkeyed container with the given root object.
 	/// - parameter root: the root object to decode.
 	/// - throws: `Decoding.Error.valueTypeMismatch` if the root object is not an array.
+	internal init(root:UnsafeMutablePointer<yyjson_val>, logLevel:Logging.Logger.Level = .critical) throws {
+		let iid = UInt16.random(in:UInt16.min...UInt16.max)
+		var buildLogger = Decoding.logger
+		buildLogger[metadataKey: "iid"] = "\(iid)"
+		buildLogger.logLevel = logLevel
+		self.logger = buildLogger
+		self.logLevel = logLevel
+		buildLogger.debug("enter: dc_unkeyed.init(root:)")
+		defer {
+			buildLogger.trace("exit: dc_unkeyed.init(root:)")
+		}
+		
+		guard yyjson_get_type(root) == YYJSON_TYPE_ARR else {
+			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected: ValueType.arr, found: ValueType(yyjson_get_type(root))))
+		}
+		self.length = yyjson_arr_size(root)
+		if self.length == 0 {
+			self.state = .end
+		} else {
+			self.state = .content(unsafe_yyjson_get_first(root))
+		}
+	}
+	#else
+	/// initialize an unkeyed container with the given root object.
+	/// - parameter root: the root object to decode.
 	internal init(root:UnsafeMutablePointer<yyjson_val>) throws {
 		guard yyjson_get_type(root) == YYJSON_TYPE_ARR else {
 			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected: ValueType.arr, found: ValueType(yyjson_get_type(root))))
@@ -40,6 +72,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			self.state = .content(unsafe_yyjson_get_first(root))
 		}
 	}
+	#endif
 
 	// called every time a value is decoded. 
 	private mutating func increment() {
@@ -339,7 +372,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			case .end:
 			throw Decoding.Error.contentOverflow
 			case .content(let root):
+
+			#if QUICKJSON_SHOULDLOG
+			let decodedValue = try T(from:decoder(root:root, logLevel:self.logLevel))
+			#else
 			let decodedValue = try T(from:decoder(root:root))
+			#endif
 			self.increment()
 			return decodedValue
 		}
@@ -357,7 +395,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			case .end:
 			throw Decoding.Error.contentOverflow
 			case .content(let root):
+
+			#if QUICKJSON_SHOULDLOG
+			let decodedValue = try KeyedDecodingContainer(dc_keyed<NestedKey>(root:root, logLevel:self.logLevel))
+			#else
 			let decodedValue = try KeyedDecodingContainer(dc_keyed<NestedKey>(root:root))
+			#endif
 			self.increment()
 			return decodedValue
 		}
@@ -375,7 +418,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			case .end:
 			throw Decoding.Error.contentOverflow
 			case .content(let root):
+			#if QUICKJSON_SHOULDLOG
+			let decodedValue = try dc_unkeyed(root:root, logLevel:self.logLevel)
+			#else
 			let decodedValue = try dc_unkeyed(root:root)
+			#endif
 			self.increment()
 			return decodedValue
 		}
