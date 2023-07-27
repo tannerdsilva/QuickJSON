@@ -1,9 +1,8 @@
 import XCTest
 @testable import QuickJSON
+import Logging
 
 final class QuickJSONTests: XCTestCase {
-	var decoder: QuickJSON.Decoder!
-	var encoder: QuickJSON.Encoder!
 	struct TestModel: Codable {
 		let id: Int
 		let name: String
@@ -14,13 +13,9 @@ final class QuickJSONTests: XCTestCase {
     }
 	override func setUp() {
 		super.setUp()
-		decoder = QuickJSON.Decoder()
-		encoder = QuickJSON.Encoder()
 	}
 
 	override func tearDown() {
-		decoder = nil
-		encoder = nil
 		super.tearDown()
 	}
 
@@ -35,7 +30,7 @@ final class QuickJSONTests: XCTestCase {
 		
 		// When
 		do {
-			let result = try decoder.decode(TestModel.self, from: Array(jsonData))
+			let result = try QuickJSON.decode(TestModel.self, from: Array(jsonData), size:jsonData.count)
 			
 			// Then
 			XCTAssertEqual(result.id, 1)
@@ -56,7 +51,7 @@ final class QuickJSONTests: XCTestCase {
 		
 		// When
 		do {
-			let _ = try decoder.decode(TestModel.self, from: Array(jsonData))
+			let _ = try QuickJSON.decode(TestModel.self, from: Array(jsonData), size:jsonData.count)
 			
 			// Then
 			XCTFail("Decoding should not be successful for invalid data")
@@ -72,7 +67,7 @@ final class QuickJSONTests: XCTestCase {
         
         // When
         do {
-            let result = try encoder.encode(testData)
+            let result = try QuickJSON.encode(testData)
             let resultString = String(bytes: result, encoding: .utf8)
 
             // Then
@@ -94,7 +89,7 @@ final class QuickJSONTests: XCTestCase {
 
 		// When
 		do {
-			let result = try decoder.decode([TestModel].self, from: Array(jsonArrayData))
+			let result = try QuickJSON.decode([TestModel].self, from: Array(jsonArrayData), size:jsonArrayData.count)
 
 			// Then
 			XCTAssertEqual(result.count, 3)
@@ -110,7 +105,7 @@ final class QuickJSONTests: XCTestCase {
 
 		// When
 		do {
-			let result = try encoder.encode([TestModel(id: 4, name: "Test Name 4"), TestModel(id: 5, name: "Test Name 5")])
+			let result = try QuickJSON.encode([TestModel(id: 4, name: "Test Name 4"), TestModel(id: 5, name: "Test Name 5")])
 			let resultString = String(bytes: result, encoding: .utf8)
 
 			// Then
@@ -124,8 +119,8 @@ final class QuickJSONTests: XCTestCase {
         let testData = UnkeyedInKeyedObj(id: "123", arr: ["A", "B", "C"])
         
         do {
-            let encodedData = try encoder.encode(testData)
-            let decodedData = try decoder.decode(UnkeyedInKeyedObj.self, from: Array(encodedData))
+            let encodedData = try QuickJSON.encode(testData)
+            let decodedData = try QuickJSON.decode(UnkeyedInKeyedObj.self, from: Array(encodedData), size:encodedData.count)
             
             XCTAssertEqual(decodedData.id, testData.id)
             XCTAssertEqual(decodedData.arr, testData.arr)
