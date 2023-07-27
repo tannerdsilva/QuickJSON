@@ -35,8 +35,15 @@ public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flag
 	defer {
 		yyjson_mut_doc_free(newDoc)
 	}
-
-	try object.encode(to:encoder_from_root(doc:newDoc!, logLevel:logLevel))
+	switch memconfig {
+	case .automatic:
+		break
+	case .preallocated(let region):
+		try region.expose { (alc) -> Void in
+			try object.encode(to:encoder_from_root(doc:newDoc!, logLevel:logLevel))
+		}
+	}
+	
 	return try newDoc!.exportDocumentBytes(flags:flags)
 }
 #else
