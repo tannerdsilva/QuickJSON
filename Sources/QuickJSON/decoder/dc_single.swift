@@ -35,9 +35,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns true if the following value is nil.
 	internal func decodeNil() -> Bool {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decodeNil()")
+		self.logger.debug("enter: dc_single.decodeNil()")
 		defer {
-			self.logger.trace("exit: decodeNil()")
+			self.logger.trace("exit: dc_single.decodeNil()")
 		}
 		#endif
 		return root.decodeNil()
@@ -46,9 +46,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as a boolean.
 	internal func decode(_ type:Bool.Type) throws -> Bool {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:Bool.Type)")
+		self.logger.debug("enter: dc_single.decode(_:Bool.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:Bool.Type)")
+			self.logger.trace("exit: dc_single.decode(_:Bool.Type)")
 		}
 		#endif
 		return try root.decodeBool()
@@ -57,9 +57,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as a string.
 	internal func decode(_ type:String.Type) throws -> String {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:String.Type)")
+		self.logger.debug("enter: dc_single.decode(_:String.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:String.Type)")
+			self.logger.trace("exit: dc_single.decode(_:String.Type)")
 		}
 		#endif
 		return try root.decodeString()
@@ -68,9 +68,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as a double.
 	internal func decode(_ type:Double.Type) throws -> Double {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:Double.Type)")
+		self.logger.debug("enter: dc_single.decode(_:Double.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:Double.Type)")
+			self.logger.trace("exit: dc_single.decode(_:Double.Type)")
 		}
 		#endif
 		return try root.decodeDouble()
@@ -79,9 +79,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as a float.
 	internal func decode(_ type:Float.Type) throws -> Float {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:Float.Type)")
+		self.logger.debug("enter: dc_single.decode(_:Float.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:Float.Type)")
+			self.logger.trace("exit: dc_single.decode(_:Float.Type)")
 		}
 		#endif
 		return try root.decodeFloat()
@@ -90,9 +90,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as an integer.
 	internal func decode(_ type:Int.Type) throws -> Int {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:Int.Type)")
+		self.logger.debug("enter: dc_single.decode(_:Int.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:Int.Type)")
+			self.logger.trace("exit: dc_single.decode(_:Int.Type)")
 		}
 		#endif
 		return try root.decodeInt()
@@ -101,9 +101,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as an 8 bit integer.
 	internal func decode(_ type:Int8.Type) throws -> Int8 {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:Int8.Type)")
+		self.logger.debug("enter: dc_single.decode(_:Int8.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:Int8.Type)")
+			self.logger.trace("exit: dc_single.decode(_:Int8.Type)")
 		}
 		#endif
 		return try root.decodeInt8()
@@ -112,9 +112,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as a 16 bit integer.
 	internal func decode(_ type:Int16.Type) throws -> Int16 {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:Int16.Type)")
+		self.logger.debug("enter: dc_single.decode(_:Int16.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:Int16.Type)")
+			self.logger.trace("exit: dc_single.decode(_:Int16.Type)")
 		}
 		#endif
 		return try root.decodeInt16()
@@ -123,9 +123,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as a 32 bit integer.
 	internal func decode(_ type:Int32.Type) throws -> Int32 {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:Int32.Type)")
+		self.logger.debug("enter: dc_single.decode(_:Int32.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:Int32.Type)")
+			self.logger.trace("exit: dc_single.decode(_:Int32.Type)")
 		}
 		#endif
 		return try root.decodeInt32()
@@ -134,9 +134,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as a 64 bit integer.
 	internal func decode(_ type:Int64.Type) throws -> Int64 {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:Int64.Type)")
+		self.logger.debug("enter: dc_single.decode(_:Int64.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:Int64.Type)")
+			self.logger.trace("exit: dc_single.decode(_:Int64.Type)")
 		}
 		#endif
 		return try root.decodeInt64()
@@ -145,9 +145,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as an unsigned integer.
 	internal func decode(_ type:UInt.Type) throws -> UInt {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:UInt.Type)")
+		self.logger.debug("enter: dc_single.decode(_:UInt.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:UInt.Type)")
+			self.logger.trace("exit: dc_single.decode(_:UInt.Type)")
 		}
 		#endif
 		return try root.decodeUInt()
@@ -156,9 +156,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as an unsigned 8 bit integer.
 	internal func decode(_ type:UInt8.Type) throws -> UInt8 {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:UInt8.Type)")
+		self.logger.debug("enter: dc_single.decode(_:UInt8.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:UInt8.Type)")
+			self.logger.trace("exit: dc_single.decode(_:UInt8.Type)")
 		}
 		#endif
 		return try root.decodeUInt8()
@@ -167,9 +167,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as an unsigned 16 bit integer.
 	internal func decode(_ type:UInt16.Type) throws -> UInt16 {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:UInt16.Type)")
+		self.logger.debug("enter: dc_single.decode(_:UInt16.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:UInt16.Type)")
+			self.logger.trace("exit: dc_single.decode(_:UInt16.Type)")
 		}
 		#endif
 		return try root.decodeUInt16()
@@ -178,9 +178,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as an unsigned 32 bit integer.
 	internal func decode(_ type:UInt32.Type) throws -> UInt32 {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:UInt32.Type)")
+		self.logger.debug("enter: dc_single.decode(_:UInt32.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:UInt32.Type)")
+			self.logger.trace("exit: dc_single.decode(_:UInt32.Type)")
 		}
 		#endif
 		return try root.decodeUInt32()
@@ -189,9 +189,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as an unsigned 64 bit integer.
 	internal func decode(_ type:UInt64.Type) throws -> UInt64 {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:UInt64.Type)")
+		self.logger.debug("enter: dc_single.decode(_:UInt64.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:UInt64.Type)")
+			self.logger.trace("exit: dc_single.decode(_:UInt64.Type)")
 		}
 		#endif
 		return try root.decodeUInt64()
@@ -200,9 +200,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 	/// returns the value as a specified Decodable type.
 	internal func decode<T>(_ type:T.Type) throws -> T where T:Decodable {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: decode(_:T.Type)")
+		self.logger.debug("enter: dc_single.decode(_:T.Type)")
 		defer {
-			self.logger.trace("exit: decode(_:T.Type)")
+			self.logger.trace("exit: dc_single.decode(_:T.Type)")
 		}
 		#endif
 		return try T(from:decoder(root:root))

@@ -1,4 +1,4 @@
-## v1.0.0
+# v1.0.0
 
 - Eliminated `Encoder` and `Decoder` as to not conflict with the names of the native language protocols.
 

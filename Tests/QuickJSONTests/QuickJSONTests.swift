@@ -29,7 +29,7 @@ final class QuickJSONTests: XCTestCase {
 		
 		// When
 		do {
-			let result = try QuickJSON.decode(TestModel.self, from: Array(jsonData))
+			let result = try QuickJSON.decode(TestModel.self, from: Array(jsonData), size:jsonData.count)
 			
 			// Then
 			XCTAssertEqual(result.id, 1)
@@ -50,7 +50,7 @@ final class QuickJSONTests: XCTestCase {
 		
 		// When
 		do {
-			let _ = try QuickJSON.decode(TestModel.self, from: Array(jsonData))
+			let _ = try QuickJSON.decode(TestModel.self, from: Array(jsonData), size:jsonData.count)
 			
 			// Then
 			XCTFail("Decoding should not be successful for invalid data")
@@ -88,7 +88,7 @@ final class QuickJSONTests: XCTestCase {
 
 		// When
 		do {
-			let result = try decoder.decode([TestModel].self, from: Array(jsonArrayData))
+			let result = try QuickJSON.decode([TestModel].self, from: Array(jsonArrayData), size:jsonArrayData.count)
 
 			// Then
 			XCTAssertEqual(result.count, 3)
@@ -119,7 +119,7 @@ final class QuickJSONTests: XCTestCase {
         
         do {
             let encodedData = try QuickJSON.encode(testData)
-            let decodedData = try decoder.decode(UnkeyedInKeyedObj.self, from: Array(encodedData))
+            let decodedData = try QuickJSON.decode(UnkeyedInKeyedObj.self, from: Array(encodedData), size:encodedData.count)
             
             XCTAssertEqual(decodedData.id, testData.id)
             XCTAssertEqual(decodedData.arr, testData.arr)

@@ -19,7 +19,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 	/// initialize a keyed container with the given root object.
 	/// - parameter root: the root object of the json document.
 	/// - parameter logLevel: the log level to use for this container.
-	/// - throws: `Decoder.Error.valueTypeMismatch` if the root object is not an object.
+	/// - throws: `Decoding.Error.valueTypeMismatch` if the root object is not an object.
 	internal init(root:UnsafeMutablePointer<yyjson_val>, logLevel:Logging.Logger.Level) throws {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
@@ -31,14 +31,14 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 			buildLogger.trace("exit: dc_keyed.init(root:)")
 		}
 		guard yyjson_get_type(root) == YYJSON_TYPE_OBJ else {
-			throw Decoder.Error.valueTypeMismatch(Decoder.Error.ValueTypeMismatchInfo(expected: ValueType.obj, found: ValueType(yyjson_get_type(root))))
+			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected: ValueType.obj, found: ValueType(yyjson_get_type(root))))
 		}
 		self.root = root
 	}
 	#else
 	/// initialize a keyed container with the given root object.
 	/// - parameter root: the root object of the json document.
-	/// - throws: `Decoder.Error.valueTypeMismatch` if the root object is not an object.
+	/// - throws: `Decoding.Error.valueTypeMismatch` if the root object is not an object.
 	internal init(root:UnsafeMutablePointer<yyjson_val>) throws {
 		guard yyjson_get_type(root) == YYJSON_TYPE_OBJ else {
 			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected: ValueType.obj, found: ValueType(yyjson_get_type(root))))
@@ -86,7 +86,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeBool()
 	}
@@ -102,7 +102,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeString()
 	}
@@ -118,7 +118,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeDouble()
 	}
@@ -134,7 +134,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeFloat()
 	}
@@ -150,7 +150,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeInt()
 	}
@@ -166,7 +166,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeInt8()
 	}
@@ -182,7 +182,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeInt16()
 	}
@@ -198,7 +198,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeInt32()
 	}
@@ -214,7 +214,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeInt64()
 	}
@@ -229,7 +229,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeUInt()
 	}
@@ -245,7 +245,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeUInt8()
 	}
@@ -261,7 +261,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeUInt16()
 	}
@@ -277,7 +277,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeUInt32()
 	}
@@ -293,7 +293,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return try getKeyRoot!.decodeUInt64()
 	}
@@ -309,7 +309,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 
 		#if QUICKJSON_SHOULDLOG
@@ -330,7 +330,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 
 		#if QUICKJSON_SHOULDLOG
@@ -351,7 +351,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 	
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 
 		#if QUICKJSON_SHOULDLOG

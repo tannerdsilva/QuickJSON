@@ -1,9 +1,10 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+/// decoder from root
 internal struct decoder:Swift.Decoder {
 	/// the root object for the json document
-	private var root:UnsafeMutablePointer<yyjson_val>
+	private let root:UnsafeMutablePointer<yyjson_val>
 	/// initialize a new decoder from a root json object
 	internal init(root:UnsafeMutablePointer<yyjson_val>) {
 		self.root = root

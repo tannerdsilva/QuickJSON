@@ -13,6 +13,9 @@ internal struct encoder_from_root:Swift.Encoder {
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
 	private let logLevel:Logging.Logger.Level
+	/// initialize the encoder from the root object
+	/// - pararmeter doc: the root object of the json document
+	/// - pararmeter logLevel: the log level to use for this encoder
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logLevel:Logging.Logger.Level) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
@@ -27,6 +30,8 @@ internal struct encoder_from_root:Swift.Encoder {
 		self.doc = doc
 	}
 	#else
+	/// initialize the encoder from the root object
+	/// - pararmeter doc: the root object of the json document
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>) {
 		self.doc = doc
 	}
