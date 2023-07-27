@@ -1,3 +1,11 @@
+# v1.0.1
+
+- Tweaked `Package.swift` to use version descriptions that will be easier to build with other projects.
+
+- Added notes in `README.md` regarding semantic versioning of this project.
+
+- Improved documentation on the handler-based decoding function.
+
 # v1.0.0
 
 - Eliminated `Encoder` and `Decoder` as to not conflict with the names of the native language protocols.

@@ -16,6 +16,16 @@ QuickJSON is an easy, efficient, and uncompromising integration of the yyjson pa
 
 	- As of version `1.0.0`, QuickJSON also offers encode and decode variants that allow for dynamic type parsing through handler functions.
 
+## Versioning Practices
+
+QuickJSON is developed using [Semantic Versioning 2.0.0](https://semver.org/), where given the following pattern `MAJOR`.`MINOR`.`PATCH`, the various elements will be incremented based on the following conditions:
+
+1. MAJOR is incremented when incompatible API changes are made.
+
+2. MINOR is incremented when backwards compatible features are added.
+
+3. PATCH is incremented when backwards bug fixes are shipped.
+
 ## Log Mode
 
 QuickJSON is built for performance first and foremost. As such, it does NOT include any logging facilities in its build as default. This even applies to debug builds.

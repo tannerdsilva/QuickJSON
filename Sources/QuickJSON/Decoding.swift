@@ -5,9 +5,17 @@ import yyjson
 import Logging
 #endif
 
-// MARK: Decoding Data
+// MARK: Decode with Handler
 #if QUICKJSON_SHOULDLOG
 /// decode an unknown type from a json document using a specified handler function.
+/// - parameters:
+/// 	- data: a pointer to the json document to decode
+/// 	- size: the size of the json document
+/// 	- flags: the decoding flags to use
+/// 	- memconfig: the memory configuration to use
+/// 	- logLevel: the log level to use for this job
+/// 	- handlerFunc: the function to handle the parsing actions
+/// - returns: transparently returns the return value of the handler function
 public func decode<T:Decodable, R>(
 	data:UnsafeRawPointer, size:size_t,
 	flags:Decoding.Flags = Decoding.Flags(),
@@ -39,6 +47,13 @@ public func decode<T:Decodable, R>(
 }
 #else
 /// decode an unknown type from a json document using a specified handler function.
+/// - parameters:
+/// 	- data: a pointer to the json document to decode
+/// 	- size: the size of the json document
+/// 	- flags: the decoding flags to use
+/// 	- memconfig: the memory configuration to use
+/// 	- handlerFunc: the function to handle the parsing actions
+/// - returns: transparently returns the return value of the handler function
 public func decode<R>(
 	data:UnsafeRawPointer, size:size_t,
 	flags:Decoding.Flags = Decoding.Flags(),
