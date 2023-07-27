@@ -15,12 +15,15 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
 	private let logLevel:Logging.Logger.Level
+
 	/// initialize a keyed container with the given root object.
+	/// - parameter root: the root object of the json document.
+	/// - parameter logLevel: the log level to use for this container.
 	/// - throws: `Decoder.Error.valueTypeMismatch` if the root object is not an object.
 	internal init(root:UnsafeMutablePointer<yyjson_val>, logLevel:Logging.Logger.Level) throws {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
-		buildLogger[metadataKey: "iid"] = "\(iid)"
+		buildLogger[metadataKey:"iid"] = "\(iid)"
 		self.logger = buildLogger
 		self.logLevel = logLevel
 		buildLogger.debug("enter: dc_keyed.init(root:)")
@@ -33,9 +36,12 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		self.root = root
 	}
 	#else
+	/// initialize a keyed container with the given root object.
+	/// - parameter root: the root object of the json document.
+	/// - throws: `Decoder.Error.valueTypeMismatch` if the root object is not an object.
 	internal init(root:UnsafeMutablePointer<yyjson_val>) throws {
 		guard yyjson_get_type(root) == YYJSON_TYPE_OBJ else {
-			throw Decoder.Error.valueTypeMismatch(Decoder.Error.ValueTypeMismatchInfo(expected: ValueType.obj, found: ValueType(yyjson_get_type(root))))
+			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected: ValueType.obj, found: ValueType(yyjson_get_type(root))))
 		}
 		self.root = root
 	}
@@ -64,7 +70,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
-			throw Decoder.Error.notFound
+			throw Decoding.Error.notFound
 		}
 		return getKeyRoot!.decodeNil()
 	}

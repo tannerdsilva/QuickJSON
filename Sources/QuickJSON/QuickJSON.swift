@@ -8,14 +8,21 @@ internal func makeDefaultLogger(label:String, logLevel:Logger.Level) -> Logger {
 	newLogger.logLevel = logLevel
 	return newLogger
 }
+
+///	indicates if the current build of quickjson was compiled with logging enabled.
+public let loggingEnabled = true
+#else
+///	indicates if the current build of quickjson was compiled with logging enabled.
+public let loggingEnabled = false
 #endif
 
 // MARK: Encoding Data
+#if QUICKJSON_SHOULDLOG
 /// encode an object into a json based byte encoding.
 /// - parameter object: the object to encode.
 /// - parameter flags: the option flags to use for this encoding. default flag values are used if none are specified.
-#if QUICKJSON_SHOULDLOG
-public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flags(), logLevel:Logging.Logger.Level) throws -> [UInt8] {
+/// - parameter logLevel: the log level to use for this encoding.
+public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flags(), memory memconfig:Memory.Configuration = .automatic, logLevel:Logging.Logger.Level) throws -> [UInt8] {
 	Encoding.logger.debug("enter: QuickJSON.encode(_:flags:)")
 	defer {
 		Encoding.logger.trace("exit: QuickJSON.encode(_:flags:)")
@@ -33,6 +40,9 @@ public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flag
 	return try newDoc!.exportDocumentBytes(flags:flags)
 }
 #else
+/// encode an object into a json based byte encoding.
+/// - parameter object: the object to encode.
+/// - parameter flags: the option flags to use for this encoding. default flag values are used if none are specified.
 public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flags()) throws -> [UInt8] {
 	let newDoc = yyjson_mut_doc_new(nil)
 	guard newDoc != nil else {
@@ -48,6 +58,7 @@ public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flag
 }
 #endif
 
+/// namespace related to encoding.
 public struct Encoding {
 	/// errors that may occur during encoding
 	public enum Error:Swift.Error {
@@ -76,6 +87,85 @@ public struct Encoding {
 
 	// nothing to see here
 	private init() {}
+}
+
+// MARK: Decoding Data
+/// decode a value from a json document
+/// - parameter type: the type of the value to decode
+/// - parameter data: the pointer to the json document to decode
+/// - parameter flags: decoding option flags
+public func decode<T:Decodable>(_ type:T.Type, from data:UnsafeRawPointer, size:size_t, flags:Decoding.Flags = Decoding.Flags()) throws -> T {
+	var errorinfo = yyjson_read_err()
+	let yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, nil, &errorinfo)
+	guard yyjsonDoc != nil && errorinfo.code == 0 else {
+		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
+	}
+	defer {
+		yyjson_doc_free(yyjsonDoc)
+	}
+	let getRoot = yyjson_doc_get_root(yyjsonDoc)
+	guard getRoot != nil else {
+		throw Decoding.Error.documentRootError
+	}
+	let decoder = decoder(root:getRoot!)
+	return try T(from:decoder)
+}
+
+public struct Decoding {
+	/// errors that can be thrown by the decoder
+	public enum Error:Swift.Error {
+		/// thrown by an unkeyed decoding container when the bounds of the container have been exceeded
+		case contentOverflow
+		/// thrown when the decoder encounters a value that is not the type that was expected
+		case valueTypeMismatch(ValueTypeMismatchInfo)
+		/// additional information about the value type mismatch error
+		public struct ValueTypeMismatchInfo {
+			public let expected:ValueType
+			public let found:ValueType
+			internal init(expected:ValueType, found:ValueType) {
+				self.expected = expected
+				self.found = found
+			}
+		}
+		/// the key could not be found
+		case notFound
+		/// the root of the document could not be found
+		case documentParseError(ParseInfo)
+		/// detailed information about a parse error
+		public struct ParseInfo {
+			/// description of the error
+			let error:String
+			/// the buffer offset where the error occurred
+			let offset:size_t
+			/// the error code
+			let code:UInt32
+			internal init(writeInfo errorInfo:yyjson_write_err) {
+				self.error = String(cString:errorInfo.msg)
+				self.offset = 0
+				self.code = errorInfo.code
+			}
+			internal init(readInfo errorInfo:yyjson_read_err) {
+				self.error = String(cString:errorInfo.msg)
+				self.offset = errorInfo.pos
+				self.code = errorInfo.code
+			}
+		}
+
+		/// the root value, object, or array of the document could not be found 
+		case documentRootError
+	}
+
+	/// option flags for the decoder
+	public struct Flags:OptionSet {
+		public let rawValue:UInt32
+		public init(rawValue:UInt32 = 0) { self.rawValue = rawValue }
+		public static let inSitu = Flags(rawValue:YYJSON_READ_INSITU)
+		public static let stopWhenDone = Flags(rawValue:YYJSON_READ_STOP_WHEN_DONE)
+		public static let allowTrailingCommas = Flags(rawValue:YYJSON_READ_ALLOW_TRAILING_COMMAS)
+		public static let allowComments = Flags(rawValue:YYJSON_READ_ALLOW_COMMENTS)
+		public static let allowInfAndNaN = Flags(rawValue:YYJSON_READ_ALLOW_INF_AND_NAN)
+		public static let allowInvalidUnicode = Flags(rawValue:YYJSON_READ_ALLOW_INVALID_UNICODE)
+	}
 }
 
 

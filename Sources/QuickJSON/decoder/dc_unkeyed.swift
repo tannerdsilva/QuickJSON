@@ -1,6 +1,10 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+#if QUICKJSON_SHOULDLOG
+import Logging
+#endif
+
 internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// helps this struct keep track of its internal state
@@ -55,6 +59,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// returns true if the next value in the container is null.
 	internal mutating func decodeNil() throws -> Bool {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decodeNil()")
+		defer {
+			self.logger.trace("exit: decodeNil()")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -67,6 +77,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a boolean.
 	internal mutating func decode(_ type:Bool.Type) throws -> Bool {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:Bool.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:Bool.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -79,6 +95,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a string.
 	internal mutating func decode(_ type:String.Type) throws -> String {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:String.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:String.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -91,6 +113,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a double.
 	internal mutating func decode(_ type:Double.Type) throws -> Double {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:Double.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:Double.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -103,6 +131,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a float.
 	internal mutating func decode(_ type:Float.Type) throws -> Float {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:Float.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:Float.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -115,6 +149,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as an int.
 	internal mutating func decode(_ type:Int.Type) throws -> Int {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:Int.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:Int.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -127,6 +167,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as an int8.
 	internal mutating func decode(_ type:Int8.Type) throws -> Int8 {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:Int8.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:Int8.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -139,6 +185,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as an int16.
 	internal mutating func decode(_ type:Int16.Type) throws -> Int16 {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:Int16.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:Int16.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -151,6 +203,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as an int32.
 	internal mutating func decode(_ type:Int32.Type) throws -> Int32 {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:Int32.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:Int32.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -163,6 +221,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as an int64.
 	internal mutating func decode(_ type:Int64.Type) throws -> Int64 {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:Int64.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:Int64.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -175,6 +239,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a uint.
 	internal mutating func decode(_ type:UInt.Type) throws -> UInt {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:UInt.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:UInt.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -187,6 +257,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a uint8.
 	internal mutating func decode(_ type:UInt8.Type) throws -> UInt8 {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:UInt8.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:UInt8.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -199,6 +275,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a uint16.
 	internal mutating func decode(_ type:UInt16.Type) throws -> UInt16 {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:UInt16.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:UInt16.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -211,6 +293,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a uint32.
 	internal mutating func decode(_ type:UInt32.Type) throws -> UInt32 {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:UInt32.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:UInt32.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -223,6 +311,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a uint64.
 	internal mutating func decode(_ type:UInt64.Type) throws -> UInt64 {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:UInt64.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:UInt64.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -235,6 +329,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes a given decodable type from the next value in the container.
 	internal mutating func decode<T>(_ type:T.Type) throws -> T where T:Decodable {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: decode(_:T.Type)")
+		defer {
+			self.logger.trace("exit: decode(_:T.Type)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -247,6 +347,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decodes the next value in the container as a keyed container.
 	internal mutating func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: nestedContainer(keyedBy:)")
+		defer {
+			self.logger.trace("exit: nestedContainer(keyedBy:)")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -259,6 +365,12 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 
 	/// decode the next value in the container as an unkeyed container.
 	internal mutating func nestedUnkeyedContainer() throws -> UnkeyedDecodingContainer {
+		#if QUICKJSON_SHOULDLOG
+		self.logger.debug("enter: nestedUnkeyedContainer()")
+		defer {
+			self.logger.trace("exit: nestedUnkeyedContainer()")
+		}
+		#endif
 		switch self.state {
 			case .end:
 			throw Decoder.Error.contentOverflow
@@ -268,6 +380,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			return decodedValue
 		}
 	}
+
 
 	// required by swift.
 	internal var count:Int? {

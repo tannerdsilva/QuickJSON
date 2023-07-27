@@ -1,6 +1,10 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
+#if QUICKJSON_SHOULDLOG
+import Logging
+#endif
+
 /// primary single value decoding container
 internal struct dc_single:Swift.SingleValueDecodingContainer {
 	private let root:UnsafeMutablePointer<yyjson_val>
@@ -16,9 +20,9 @@ internal struct dc_single:Swift.SingleValueDecodingContainer {
 		buildLogger[metadataKey: "iid"] = "\(iid)"
 		self.logger = buildLogger
 		self.logLevel = logLevel
-		buildLogger.debug("enter: ec_keyed.init(doc:root:)")
+		buildLogger.debug("enter: dc_single.init(root:)")
 		defer {
-			buildLogger.trace("exit: ec_keyed.init(doc:root:)")
+			buildLogger.trace("exit: dc_single.init(root:)")
 		}
 		self.root = root
 	}

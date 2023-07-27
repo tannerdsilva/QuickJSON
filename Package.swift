@@ -23,7 +23,10 @@ let package = Package(
 		),
 		.testTarget(
 			name: "QuickJSONTests",
-			dependencies: ["QuickJSON"]
+			dependencies: ["QuickJSON"],
+			swiftSettings: [
+				.define("QUICKJSON_SHOULDLOG")
+			]
 		),
 	]
 )

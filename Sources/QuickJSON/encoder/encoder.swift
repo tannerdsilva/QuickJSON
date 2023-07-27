@@ -140,7 +140,6 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 
 		// create the new key-value container
 		let newObject = yyjson_mut_obj(doc)!
-
 		// append the container to the parent
 		yyjson_mut_arr_append(arr, newObject)
 
@@ -162,7 +161,6 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 
 		// create the array container
 		let newObject = yyjson_mut_arr(doc)!
-
 		// append the container to the parent
 		yyjson_mut_arr_append(arr, newObject)
 
