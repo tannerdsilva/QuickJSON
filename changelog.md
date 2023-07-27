@@ -1,4 +1,8 @@
-# v1.0.1
+### v1.0.2
+
+- Tweaked `Package.swift` again, trying to find the right combo that makes the SwiftPM happy in various external projects.
+
+### v1.0.1
 
 - Tweaked `Package.swift` to use version descriptions that will be easier to build with other projects.
 
