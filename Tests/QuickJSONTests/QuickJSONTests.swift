@@ -2,6 +2,19 @@ import XCTest
 @testable import QuickJSON
 import Logging
 
+struct MyCodingKey:CodingKey {
+	var stringValue:String
+	init?(stringValue:String) {
+		self.stringValue = stringValue
+	}
+	var intValue:Int? {
+		return nil
+	}
+	init?(intValue:Int) {
+		return nil
+	}
+}
+
 final class QuickJSONTests: XCTestCase {
 	struct TestModel: Codable {
 		let id: Int
@@ -35,6 +48,29 @@ final class QuickJSONTests: XCTestCase {
 			// Then
 			XCTAssertEqual(result.id, 1)
 			XCTAssertEqual(result.name, "Test Name")
+		} catch {
+			XCTFail("Decoding failed with error: \(error)")
+		}
+	}
+
+	func testDecodeAllKeys() {
+		var randomNumbers = Set<UInt64>()
+		for _ in 0..<5 {
+			randomNumbers.insert(UInt64.random(in: 0..<UInt64.max))
+		}
+		let jsonData = Set(randomNumbers.compactMap({ "#\($0)" }))
+		var buildData = [String:String]()
+		for dat in jsonData {
+			buildData[dat] = "testing"
+		}
+
+		do {
+			let encodedDat = try QuickJSON.encode(buildData)
+			let getKeys = try QuickJSON.decode(bytes:encodedDat) { decoder in
+				let keyedContainer = try decoder.container(keyedBy: MyCodingKey.self)
+				return Set(keyedContainer.allKeys.compactMap( { $0.stringValue } ))
+			}
+			XCTAssertEqual(jsonData, getKeys)
 		} catch {
 			XCTFail("Decoding failed with error: \(error)")
 		}

@@ -365,7 +365,35 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 	// required by swift. unused.
 	internal var allKeys:[K] {
 		get {
-			return []
+			#if QUICKJSON_SHOULDLOG
+			self.logger.debug("enter: dc_keyed.allKeys")
+			defer {
+				self.logger.trace("exit: dc_keyed.allKeys")
+			}
+			#endif
+
+			var yyiter = yyjson_obj_iter()
+			let initIter = yyjson_obj_iter_init(root, &yyiter)
+			guard initIter == true else {
+				#if QUICKJSON_SHOULDLOG
+				self.logger.error("failed to initialize iterator")
+				#endif
+				return []
+			}
+			var buildKeys = [K]()
+			while yyjson_obj_iter_has_next(&yyiter) == true {
+				let getKey = yyjson_obj_iter_next(&yyiter)!
+				do {
+					let getString = try getKey.decodeString()
+					let buildKey = K(stringValue:getString)
+					if buildKey != nil {
+						buildKeys.append(buildKey!)
+					}
+				} catch {
+					continue
+				}
+			}
+			return buildKeys
 		}
 	}
 	internal var codingPath:[CodingKey] {

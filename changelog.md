@@ -1,3 +1,11 @@
+# v1.1.0
+
+- Improvements to decoding.
+
+	- New functions that can take data input from a `Collection where Element == UInt8`.
+
+	- Added the ability to get all the keys for a keyed decoding container.
+
 ### v1.0.2
 
 - Tweaked `Package.swift` again, trying to find the right combo that makes the SwiftPM happy in various external projects.
