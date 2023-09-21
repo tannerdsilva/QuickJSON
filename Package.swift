@@ -11,7 +11,7 @@ let package = Package(
 	],
 	dependencies: [
 		/// high performance json parsing library
-		.package(url:"https://github.com/ibireme/yyjson.git", "0.7.0"..<"0.8.0"),
+		.package(url:"https://github.com/ibireme/yyjson.git", "0.8.0"..<"0.9.0"),
 
 		/// swift logging (helpful for debugging, not built into release builds)
 		.package(url:"https://github.com/apple/swift-log.git", from:"1.0.0")
