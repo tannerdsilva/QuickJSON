@@ -35,9 +35,9 @@ internal struct encoder_from_root:Swift.Encoder {
 	/// retrieve a keyed container for this encoder
 	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key:CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		self.logger?.debug("enter: container<Key>(keyedBy:)")
+		self.logger?.debug("enter: container<\(String(describing:Key.self))>(keyedBy:\(String(describing:Key.self)))")
 		defer {
-			self.logger?.trace("exit: container<Key>(keyedBy:)")
+			self.logger?.trace("exit: container<\(String(describing:Key.self))>(keyedBy:\(String(describing:Key.self)))")
 		}
 		#endif
 
@@ -106,8 +106,7 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 	private let arr:UnsafeMutablePointer<yyjson_mut_val>
 
 	#if QUICKJSON_SHOULDLOG
-	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	private let logger:Logger?
 	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, logger:Logging.Logger?) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = logger
@@ -128,9 +127,9 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 	/// retrieve a keyed container for this encoder
 	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key :CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		self.logger?.debug("enter: container<Key>(keyedBy:)")
+		self.logger?.debug("enter: container<\(String(describing:Key.self))>(keyedBy:\(String(describing:Key.self)))")
 		defer {
-			self.logger?.trace("exit: container<Key>(keyedBy:)")
+			self.logger?.trace("exit: container<\(String(describing:Key.self))>(keyedBy:\(String(describing:Key.self)))")
 		}
 		#endif
 
@@ -224,9 +223,9 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 	/// retrieve a keyed container for this encoder
 	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key:CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		self.logger?.debug("enter: container<Key>(keyedBy:)")
+		self.logger?.debug("enter: container<\(String(describing:Key.self))>(keyedBy:\(String(describing:Key.self)))")
 		defer {
-			self.logger?.trace("exit: container<Key>(keyedBy:)")
+			self.logger?.trace("exit: container<\(String(describing:Key.self))>(keyedBy:\(String(describing:Key.self)))")
 		}
 		#endif
 

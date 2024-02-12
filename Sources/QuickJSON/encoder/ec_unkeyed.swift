@@ -21,8 +21,8 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		var buildLogger = logger
 		buildLogger?[metadataKey:"iid"] = "\(iid)"
 		buildLogger?[metadataKey:"type"] = "ec_unkeyed"
-		logger = buildLogger
-		buildLogger.debug("instance init")
+		self.logger = buildLogger
+		buildLogger?.debug("instance init")
 		self.doc = doc
 		self.root = root
 		count = 0
@@ -46,9 +46,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_null(doc)
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -68,6 +74,9 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -76,14 +85,20 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 	/// append a nested keyed container into the container
 	internal mutating func nestedContainer<NestedKey>(keyedBy keyType:NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey :CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		logger?.debug("enter: nestedContainer<NestedKey>(keyedBy:)")
+		logger?.debug("enter: nestedContainer<\(String(describing:NestedKey.self))>(keyedBy:\(String(describing:NestedKey.self)))")
 		defer {
-			logger?.trace("exit: nestedContainer<NestedKey>(keyedBy:)")
+			logger?.trace("exit: nestedContainer<\(String(describing:NestedKey.self))>(keyedBy:\(String(describing:NestedKey.self)))")
 		}
 		#endif
 
 		let newObj = yyjson_mut_obj(doc)!
+		
+		#if DEBUG
 		assert(yyjson_mut_arr_append(root, newObj) == true)
+		#else
+		_ yyjson_mut_arr_append(root, newObj)
+		#endif
+		
 		count += 1
 
 		#if QUICKJSON_SHOULDLOG
@@ -103,7 +118,13 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		#endif
 
 		let newArr = yyjson_mut_arr(doc)!
+		
+		#if DEBUG
 		assert(yyjson_mut_arr_append(root, newArr) == true)
+		#else
+		_ = yyjson_mut_arr_append(root, newArr)
+		#endif
+	
 		count += 1
 
 		#if QUICKJSON_SHOULDLOG
@@ -116,22 +137,18 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 	/// append a codable value into the container
 	internal mutating func encode<T>(_ value:T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		logger?.debug("enter: encode<T>(_:T) where T:Encodable")
+		logger?.debug("enter: encode<\(String(describing:T.self))>(_:\(String(describing:T.self))")
 		defer {
-			logger?.trace("exit: encode<T>(_:T) where T:Encodable")
+			logger?.trace("exit: encode<\(String(describing:T.self))>(_:\(String(describing:T.self))")
 		}
 		#endif
-
-		do {
-			#if QUICKJSON_SHOULDLOG
-			try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:root, logger:logger))
-			#else
-			try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:root))
-			#endif
-			count += 1
-		} catch let error {
-			throw error
-		}
+		
+		#if QUICKJSON_SHOULDLOG
+		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:root, logger:logger))
+		#else
+		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:root))
+		#endif
+		count += 1
     }
 
 	/// append a string value into the container
@@ -145,9 +162,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -167,6 +190,9 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -186,6 +212,9 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -202,9 +231,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_int(doc, Int64(value))
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -221,9 +256,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_int(doc, Int64(value))
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -240,9 +281,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_int(doc, Int64(value))
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -259,9 +306,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 
 		let newVal = yyjson_mut_int(doc, Int64(value))
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -278,9 +331,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 
 		let newVal = yyjson_mut_int(doc, value)
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -297,9 +356,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 
 		let newVal = yyjson_mut_uint(doc, UInt64(value))
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -316,9 +381,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_uint(doc, UInt64(value))
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -335,9 +406,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_uint(doc, UInt64(value))
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -354,9 +431,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_uint(doc, UInt64(value))
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
@@ -373,9 +456,15 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		
 		let newVal = yyjson_mut_uint(doc, value)
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		guard yyjson_mut_arr_append(root, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		count += 1
