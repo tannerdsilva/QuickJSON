@@ -11,22 +11,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	private let arr:UnsafeMutablePointer<yyjson_mut_val>
 
 	#if QUICKJSON_SHOULDLOG
-	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	private let logger:Logger?
 	/// initialize a new single value container from an unkeyed parent.
 	/// - parameter doc: the document this container belongs to
 	/// - parameter arr: the array this container will assign values to
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logger:Logging.Logger?) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
-		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
-		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: ec_single_from_unkeyed_container.init(doc:arr:codingPath:)")
-		defer {
-			buildLogger.trace("exit: ec_single_from_unkeyed_container.init(doc:arr:codingPath:)")
-		}
+		var buildLogger = logger
+		buildLogger?[metadataKey:"iid"] = "\(iid)"
+		buildLogger?[metadataKey:"type"] = "ec_single_from_unkeyed_container"
+		logger = buildLogger
+		buildLogger.debug("instance init")
 		self.doc = doc
 		self.arr = arr
 	}
@@ -40,9 +35,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a nil value
 	internal func encodeNil() throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encodeNil()")
+		logger?.debug("enter: encodeNil()")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encodeNil()")
+			logger?.trace("exit: encodeNil()")
 		}
 		#endif
 
@@ -56,9 +51,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a bool value
 	internal func encode(_ value:Bool) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Bool)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Bool)")
 		}
 		#endif
 		
@@ -72,9 +67,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a string value
 	internal func encode(_ value:String) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:String)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:String)")
 		}
 		#endif
 		
@@ -88,9 +83,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a double value
 	internal func encode(_ value:Double) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Double)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Double)")
 		}
 		#endif
 		let doubleVal = yyjson_mut_real(doc, value)
@@ -103,9 +98,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a float value
 	internal func encode(_ value:Float) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Float)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Float)")
 		}
 		#endif
 		
@@ -119,9 +114,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode an int value
 	internal func encode(_ value:Int) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int)")
 		}
 		#endif
 
@@ -135,9 +130,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode an int8 value
 	internal func encode(_ value:Int8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int8)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int8)")
 		}
 		#endif
 
@@ -151,9 +146,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode an int16 value
 	internal func encode(_ value:Int16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int16)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int16)")
 		}
 		#endif
 		
@@ -167,9 +162,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode an int32 value
 	internal func encode(_ value:Int32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int32)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int32)")
 		}
 		#endif
 
@@ -183,9 +178,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode an int64 value
 	internal func encode(_ value:Int64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int64)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int64)")
 		}
 		#endif
 
@@ -199,9 +194,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a uint value
 	internal func encode(_ value:UInt) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt)")
 		}
 		#endif
 
@@ -215,9 +210,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a uint8 value
 	internal func encode(_ value:UInt8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt8)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt8)")
 		}
 		#endif
 
@@ -231,9 +226,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a uint16 value
 	internal func encode(_ value:UInt16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt16)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt16)")
 		}
 		#endif
 
@@ -247,9 +242,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a uint32 value
 	internal func encode(_ value:UInt32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt32)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt32)")
 		}
 		#endif
 
@@ -263,9 +258,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode a uint64 value
 	internal func encode(_ value:UInt64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt64)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt64)")
 		}
 		#endif
 
@@ -279,9 +274,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 	/// encode an encodable value
 	internal func encode<T>(_ value:T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger?.debug("enter: encode<T>(_:T) where T:Encodable")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger?.trace("exit: encode<T>(_:T) where T:Encodable")
 		}
 		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:arr, logLevel:self.logLevel))
 		#else
@@ -303,25 +298,19 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	private let obj:UnsafeMutablePointer<yyjson_mut_val>
 	private let assignKey:UnsafeMutablePointer<yyjson_mut_val>
 
-
 	#if QUICKJSON_SHOULDLOG
-	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	private let logger:Logger?
 	/// initialize a new single value container that will assign a value to a parent object.
 	/// - parameter doc: the document to encode into
 	/// - parameter obj: the object to encode into
 	/// - parameter assignKey: the key to use to assign the single value to the parent object after it is encoded
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logger:Logging.Logger?) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
-		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
-		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: ec_single_from_keyed_container.init()")
-		defer {
-			buildLogger.trace("exit: ec_single_from_keyed_container.init()")
-		}
+		var buildLogger = logger
+		buildLogger?[metadataKey:"iid"] = "\(iid)"
+		buildLogger?[metadataKey:"type"] = "ec_single_from_keyed_container"
+		logger = buildLogger
+		buildLogger?.debug("instance init")
 		self.doc = doc
 		self.obj = obj
 		self.assignKey = assignKey
@@ -337,9 +326,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a nil value
 	internal func encodeNil() throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encodeNil()")
+		logger?.debug("enter: encodeNil()")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encodeNil()")
+			logger?.trace("exit: encodeNil()")
 		}
 		#endif
 
@@ -358,9 +347,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a bool value
 	internal func encode(_ value:Bool) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Bool)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Bool)")
 		}
 		#endif
 
@@ -379,9 +368,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a string value
 	internal func encode(_ value:String) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:String)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:String)")
 		}
 		#endif
 
@@ -400,9 +389,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a double value
 	internal func encode(_ value:Double) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Double)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Double)")
 		}
 		#endif
 
@@ -421,9 +410,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a float value
 	internal func encode(_ value:Float) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Float)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Float)")
 		}
 		#endif
 
@@ -442,9 +431,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a int value
 	internal func encode(_ value:Int) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int)")
 		}
 		#endif
 
@@ -463,9 +452,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a int8 value
 	internal func encode(_ value:Int8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int8)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int8)")
 		}
 		#endif
 
@@ -484,9 +473,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a int16 value
 	internal func encode(_ value:Int16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int16)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int16)")
 		}
 		#endif
 		
@@ -505,9 +494,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a int32 value
 	internal func encode(_ value:Int32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int32)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int32)")
 		}
 		#endif
 
@@ -526,9 +515,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a int64 value
 	internal func encode(_ value:Int64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:Int64)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:Int64)")
 		}
 		#endif
 		
@@ -547,9 +536,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a uint value
 	internal func encode(_ value:UInt) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt)")
 		}
 		#endif
 
@@ -568,9 +557,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a uint8 value
 	internal func encode(_ value:UInt8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt8)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt8)")
 		}
 		#endif
 
@@ -587,9 +576,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a uint16 value
 	internal func encode(_ value:UInt16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt16)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt16)")
 		}
 		#endif
 
@@ -607,9 +596,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a uint32 value
 	internal func encode(_ value:UInt32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt32)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt32)")
 		}
 		#endif
 
@@ -627,9 +616,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode a uint64 value
 	internal func encode(_ value:UInt64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode(_:UInt64)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode(_:UInt64)")
 		}
 		#endif
 
@@ -645,13 +634,13 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	}
 
 	/// encode an encodable value
-	internal func encode<T>(_ value:T) throws where T :Encodable {
+	internal func encode<T>(_ value:T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger?.debug("enter: encode<T>(_:T) where T:Encodable")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger?.trace("exit: encode<T>(_:T) where T:Encodable")
 		}
-		try value.encode(to:encoder_from_keyed_container(doc:self.doc, obj:self.obj, assignKey:assignKey, codingPath:self.codingPath, logLevel:self.logLevel))
+		try value.encode(to:encoder_from_keyed_container(doc:self.doc, obj:self.obj, assignKey:assignKey, codingPath:self.codingPath, logger:logger))
 		#else
 		try value.encode(to:encoder_from_keyed_container(doc:self.doc, obj:self.obj, assignKey:assignKey, codingPath:self.codingPath))
 		#endif
@@ -670,20 +659,15 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	private let doc:UnsafeMutablePointer<yyjson_mut_doc>
 
 	#if QUICKJSON_SHOULDLOG
-	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	private let logger:Logger?
 	/// initialize a new single value container that encodes directly to the root of the document
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logger:Logging.Logger?) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
-		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
-		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: ec_single_from_root.init(doc:)")
-		defer {
-			buildLogger.trace("exit: ec_single_from_root.init(doc:)")
-		}
+		var buildLogger = logger
+		buildLogger?[metadataKey:"iid"] = "\(iid)"
+		buildLogger?[metadataKey:"type"] = "ec_single_from_root"
+		logger = buildLogger
+		buildLogger?.debug("instance init")
 		self.doc = doc
 	}
 	#else
@@ -695,9 +679,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a nil value
 	internal func encodeNil() throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encodeNil()")
+		logger?.debug("enter: encodeNil()")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encodeNil()")
+			logger?.trace("exit: encodeNil()")
 		}
 		#endif
 
@@ -714,9 +698,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a boolean value
 	internal func encode(_ value:Bool) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:Bool)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:Bool)")
 		}
 		#endif
 
@@ -733,9 +717,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a string value
 	internal func encode(_ value:String) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:String)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:String)")
 		}
 		#endif
 
@@ -752,9 +736,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a double value
 	internal func encode(_ value:Double) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:Double)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:Double)")
 		}
 		#endif
 
@@ -771,9 +755,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a float value
 	internal func encode(_ value:Float) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:Float)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:Float)")
 		}
 		#endif
 
@@ -790,9 +774,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode an int value
 	internal func encode(_ value:Int) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:Int)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:Int)")
 		}
 		#endif
 
@@ -809,9 +793,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode an int8 value
 	internal func encode(_ value:Int8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:Int8)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:Int8)")
 		}
 		#endif
 
@@ -828,9 +812,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode an int16 value
 	internal func encode(_ value:Int16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:Int16)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:Int16)")
 		}
 		#endif
 
@@ -847,9 +831,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode an int32 value
 	internal func encode(_ value:Int32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:Int32)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:Int32)")
 		}
 		#endif
 
@@ -866,9 +850,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode an int64 value
 	internal func encode(_ value:Int64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:Int64)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:Int64)")
 		}
 		#endif
 
@@ -885,9 +869,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a uint value
 	internal func encode(_ value:UInt) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:UInt)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:UInt)")
 		}
 		#endif
 
@@ -904,9 +888,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a uint8 value
 	internal func encode(_ value:UInt8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:UInt8)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:UInt8)")
 		}
 		#endif
 
@@ -922,9 +906,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a uint16 value
 	internal func encode(_ value:UInt16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:UInt16)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:UInt16)")
 		}
 		#endif
 
@@ -940,9 +924,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a uint32 value
 	internal func encode(_ value:UInt32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:UInt32)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:UInt32)")
 		}
 		#endif
 		
@@ -958,9 +942,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode a uint64 value
 	internal func encode(_ value:UInt64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode(_:UInt64)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode(_:UInt64)")
 		}
 		#endif
 		
@@ -974,13 +958,13 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	}
 
 	/// encode an encodable value
-	internal func encode<T>(_ value:T) throws where T :Encodable {
+	internal func encode<T>(_ value:T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger?.debug("enter: encode<T>(_:T) where T:Encodable")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger?.trace("exit: encode<T>(_:T) where T:Encodable")
 		}
-		try value.encode(to:encoder_from_root(doc:self.doc, logLevel:self.logLevel))
+		try value.encode(to:encoder_from_root(doc:self.doc, logger:logger))
 		#else
 		try value.encode(to:encoder_from_root(doc:self.doc))
 		#endif

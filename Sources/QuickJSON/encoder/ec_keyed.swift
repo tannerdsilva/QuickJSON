@@ -14,22 +14,17 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	private let root:UnsafeMutablePointer<yyjson_mut_val>
 
 	#if QUICKJSON_SHOULDLOG
-	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	private let logger:Logger?
 	/// initializes a new keyed container
 	/// - parameter doc: the document that this container is writing to
 	/// - parameter root: the root object of the json document. this is where the container will write its keys and values to.
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>, logger:Logging.Logger?) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
-		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
+		var buildLogger = logger
+		buildLogger?[metadataKey: "iid"] = "\(iid)"
+		buildLogger?[metadataKey:"type"] = "ec_keyed<\(String(describing:K.self))>"
 		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: ec_keyed.init(doc:root:)")
-		defer {
-			buildLogger.trace("exit: ec_keyed.init(doc:root:)")
-		}
+		buildLogger?.debug("instance init")
 		self.doc = doc
 		self.root = root
 	}
@@ -43,9 +38,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode a null value for the given key
 	internal func encodeNil(forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encodeNil(forKey:K)")
+		self.logger?.debug("enter: encodeNil(forKey:K)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encodeNil(forKey:K)")
+			self.logger?.trace("exit: encodeNil(forKey:K)")
 		}
 		#endif
 
@@ -61,9 +56,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode a boolean value for the given key
 	internal func encode(_ value:Bool, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:Bool.Type, forKey:K)")
+		self.logger?.debug("enter: encode(_:Bool, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:Bool.Type, forKey:K)")
+			self.logger?.trace("exit: encode(_:Bool, forKey:)")
 		}
 		#endif
 		
@@ -79,9 +74,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:String, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:String.Type, forKey:K)")
+		self.logger?.debug("enter: encode(_:String, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:String.Type, forKey:K)")
+			self.logger?.trace("exit: encode(_:String, forKey:)")
 		}
 		#endif
 
@@ -97,9 +92,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode a double value for the given key
 	internal func encode(_ value:Double, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:Double.Type, forKey:K)")
+		self.logger?.debug("enter: encode(_:Double, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:Double.Type, forKey:K)")
+			self.logger?.trace("exit: encode(_:Double, forKey:)")
 		}
 		#endif
 
@@ -115,9 +110,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode a float value for the given key
 	internal func encode(_ value:Float, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:Float, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:Float, forKey:)")
 		}
 		#endif
 
@@ -133,9 +128,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:Int, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:Int, forKey:)")
 		}
 		#endif
 		
@@ -151,9 +146,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int8, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:Int8, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:Int8, forKey:)")
 		}
 		#endif
 
@@ -169,9 +164,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int16, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:Int16, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:Int16, forKey:)")
 		}
 		#endif
 
@@ -188,9 +183,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int32, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:Int32, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:Int32, forKey:)")
 		}
 		#endif
 		
@@ -206,9 +201,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:Int64, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:Int64, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:Int64, forKey:)")
 		}
 		#endif
 
@@ -224,9 +219,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:UInt, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:UInt, forKey:)")
 		}
 		#endif
 
@@ -242,9 +237,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt8, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:UInt8, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:UInt8, forKey:)")
 		}
 		#endif
 
@@ -260,9 +255,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt16, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:UInt16, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:UInt16, forKey:)")
 		}
 		#endif
 
@@ -278,9 +273,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt32, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:UInt32, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:UInt32, forKey:)")
 		}
 		#endif
 
@@ -296,9 +291,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// encode an integer value for the given key
 	internal func encode(_ value:UInt64, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode(_:UInt64, forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode(_:UInt64, forKey:)")
 		}
 		#endif
 
@@ -312,11 +307,11 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	}
 
 	/// encode a float value for the given key
-	internal func encode<T>(_ value:T, forKey inputKey:K) throws where T :Encodable {
+	internal func encode<T>(_ value:T, forKey inputKey:K) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		self.logger?.debug("enter: encode<T>(_:T, forKey:) where T:Encodable")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			self.logger?.trace("exit: encode<T>(_:T, forKey:) where T:Encodable")
 		}
 		#endif
 
@@ -325,7 +320,7 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 
 		#if QUICKJSON_SHOULDLOG
-		try value.encode(to:encoder_from_keyed_container(doc:doc, obj:root, assignKey:key, codingPath:codingPath + [inputKey], logLevel:self.logLevel))
+		try value.encode(to:encoder_from_keyed_container(doc:doc, obj:root, assignKey:key, codingPath:codingPath + [inputKey], logger:logger))
 		#else
 		try value.encode(to:encoder_from_keyed_container(doc:doc, obj:root, assignKey:key, codingPath:codingPath + [inputKey]))
 		#endif
@@ -334,9 +329,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// returns a keyed container for the given key
 	internal func nestedContainer<NestedKey>(keyedBy keyType:NestedKey.Type, forKey inputKey:K) -> KeyedEncodingContainer<NestedKey> where NestedKey :CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.nestedContainer(keyedBy:forKey:)")
+		self.logger?.debug("enter: nestedContainer(keyedBy:forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.nestedContainer(keyedBy:forKey:)")
+			self.logger?.trace("exit: nestedContainer(keyedBy:forKey:)")
 		}
 		#endif
 		
@@ -344,7 +339,7 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		assert(yyjson_mut_arr_append(self.root, newObj) == true)
 		
 		#if QUICKJSON_SHOULDLOG
-		return KeyedEncodingContainer(ec_keyed<NestedKey>(doc:doc, root:newObj, logLevel:self.logLevel))
+		return KeyedEncodingContainer(ec_keyed<NestedKey>(doc:doc, root:newObj, logger:logger))
 		#else
 		return KeyedEncodingContainer(ec_keyed<NestedKey>(doc:doc, root:newObj))
 		#endif
@@ -353,9 +348,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 	/// returns an unkeyed container for the given key
 	internal func nestedUnkeyedContainer(forKey inputKey:K) -> UnkeyedEncodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.nestedUnkeyedContainer(forKey:)")
+		self.logger?.debug("enter: nestedUnkeyedContainer(forKey:)")
 		defer {
-			self.logger.trace("exit: ec_keyed.nestedUnkeyedContainer(forKey:)")
+			self.logger?.trace("exit: nestedUnkeyedContainer(forKey:)")
 		}
 		#endif
 		
@@ -366,7 +361,7 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		assert(yyjson_mut_obj_put(root, key, makeNestedUnkeyedContainer) == true)
 
 		#if QUICKJSON_SHOULDLOG
-		return ec_unkeyed(doc:doc, root:makeNestedUnkeyedContainer, logLevel:self.logLevel)
+		return ec_unkeyed(doc:doc, root:makeNestedUnkeyedContainer, logger:logger)
 		#else
 		return ec_unkeyed(doc:doc, root:makeNestedUnkeyedContainer)
 		#endif

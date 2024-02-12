@@ -5,28 +5,23 @@ import yyjson
 import Logging
 #endif
 
-/// encoder from root
+/// encoder from root.
 internal struct encoder_from_root:Swift.Encoder {
 	/// the root object of the json document
 	private let doc:UnsafeMutablePointer<yyjson_mut_doc>
 
 	#if QUICKJSON_SHOULDLOG
-	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	private let logger:Logger?
 	/// initialize the encoder from the root object
 	/// - pararmeter doc: the root object of the json document
 	/// - pararmeter logLevel: the log level to use for this encoder
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logger:Logging.Logger?) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
-		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
-		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: encoder_from_root.init()")
-		defer {
-			buildLogger.trace("exit: encoder_from_root.init()")
-		}
+		var mutateLogger = logger
+		mutateLogger?[metadataKey: "iid"] = "\(iid)"
+		mutateLogger?[metadataKey: "type"] = "encoder_from_root"
+		mutateLogger?.debug("instance init")
+		self.logger = mutateLogger
 		self.doc = doc
 	}
 	#else
@@ -38,11 +33,11 @@ internal struct encoder_from_root:Swift.Encoder {
 	#endif
 
 	/// retrieve a keyed container for this encoder
-	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key :CodingKey {
+	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key:CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_root.container(keyedBy:)")
+		self.logger?.debug("enter: container<Key>(keyedBy:)")
 		defer {
-			self.logger.trace("exit: encoder_from_root.container(keyedBy:)")
+			self.logger?.trace("exit: container<Key>(keyedBy:)")
 		}
 		#endif
 
@@ -50,18 +45,18 @@ internal struct encoder_from_root:Swift.Encoder {
 		yyjson_mut_doc_set_root(doc, getObject)
 
 		#if QUICKJSON_SHOULDLOG
-		return KeyedEncodingContainer(ec_keyed(doc:self.doc, root:getObject, logLevel:self.logLevel))
+		return KeyedEncodingContainer(ec_keyed(doc:doc, root:getObject, logger:logger))
 		#else
-		return KeyedEncodingContainer(ec_keyed(doc:self.doc, root:getObject))
+		return KeyedEncodingContainer(ec_keyed(doc:doc, root:getObject))
 		#endif
 	}
 
 	/// retrieve a unkeyed container for this encoder
 	internal func unkeyedContainer() -> UnkeyedEncodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_root.unkeyedContainer()")
+		self.logger?.debug("enter: unkeyedContainer()")
 		defer {
-			self.logger.trace("exit: encoder_from_root.unkeyedContainer()")
+			self.logger?.trace("exit: unkeyedContainer()")
 		}
 		#endif
 
@@ -69,23 +64,23 @@ internal struct encoder_from_root:Swift.Encoder {
 		yyjson_mut_doc_set_root(doc, getObject)
 
 		#if QUICKJSON_SHOULDLOG
-		return ec_unkeyed(doc:self.doc, root:getObject, logLevel:self.logLevel)
+		return ec_unkeyed(doc:doc, root:getObject, logger:logger)
 		#else
-		return ec_unkeyed(doc:self.doc, root:getObject)
+		return ec_unkeyed(doc:doc, root:getObject)
 		#endif
 	}
 
 	/// retrieve the single value container for this encoder
 	internal func singleValueContainer() -> SingleValueEncodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_root.singleValueContainer()")
+		self.logger?.debug("enter: singleValueContainer()")
 		defer {
-			self.logger.trace("exit: encoder_from_root.singleValueContainer()")
+			self.logger?.trace("exit: singleValueContainer()")
 		}
 		#endif
 
 		#if QUICKJSON_SHOULDLOG
-		return ec_single_from_root(doc:doc, logLevel:logLevel)
+		return ec_single_from_root(doc:doc, logger:logger)
 		#else
 		return ec_single_from_root(doc:doc)
 		#endif
@@ -113,17 +108,13 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
 	private let logLevel:Logging.Logger.Level
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, logger:Logging.Logger?) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
-		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
+		var buildLogger = logger
+		buildLogger?[metadataKey:"iid"] = "\(iid)"
+		buildLogger?[metadataKey:"type"] = "encoder_from_unkeyed_container"
 		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: encoder_from_unkeyed_container.init()")
-		defer {
-			buildLogger.trace("exit: encoder_from_unkeyed_container.init()")
-		}
+		buildLogger?.debug("instance init")
 		self.doc = doc
 		self.arr = arr
 	}
@@ -137,9 +128,9 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 	/// retrieve a keyed container for this encoder
 	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key :CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_unkeyed_container.container(keyedBy:)")
+		self.logger?.debug("enter: container<Key>(keyedBy:)")
 		defer {
-			self.logger.trace("exit: encoder_from_unkeyed_container.container(keyedBy:)")
+			self.logger?.trace("exit: container<Key>(keyedBy:)")
 		}
 		#endif
 
@@ -149,18 +140,18 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 		yyjson_mut_arr_append(arr, newObject)
 
 		#if QUICKJSON_SHOULDLOG
-		return KeyedEncodingContainer(ec_keyed(doc:self.doc, root:newObject, logLevel:self.logLevel))
+		return KeyedEncodingContainer(ec_keyed(doc:doc, root:newObject, logger:logger))
 		#else
-		return KeyedEncodingContainer(ec_keyed(doc:self.doc, root:newObject))
+		return KeyedEncodingContainer(ec_keyed(doc:doc, root:newObject))
 		#endif
 	}
 
 	/// retrieve an unkeyed container for this encoder
 	internal func unkeyedContainer() -> UnkeyedEncodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_unkeyed_container.unkeyedContainer()")
+		self.logger?.debug("enter: unkeyedContainer()")
 		defer {
-			self.logger.trace("exit: encoder_from_unkeyed_container.unkeyedContainer()")
+			self.logger?.trace("exit: unkeyedContainer()")
 		}
 		#endif
 
@@ -170,20 +161,20 @@ internal struct encoder_from_unkeyed_container:Swift.Encoder {
 		yyjson_mut_arr_append(arr, newObject)
 
 		#if QUICKJSON_SHOULDLOG
-		return ec_unkeyed(doc:self.doc, root:newObject, logLevel:self.logLevel)
+		return ec_unkeyed(doc:doc, root:newObject, logger:logger)
 		#else
-		return ec_unkeyed(doc:self.doc, root:newObject)
+		return ec_unkeyed(doc:doc, root:newObject)
 		#endif
 	}
 
 	/// retrieve the single value container for this encoder
 	internal func singleValueContainer() -> SingleValueEncodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_unkeyed_container.singleValueContainer()")
+		self.logger?.debug("enter: singleValueContainer()")
 		defer {
-			self.logger.trace("exit: encoder_from_unkeyed_container.singleValueContainer()")
+			self.logger?.trace("exit: singleValueContainer()")
 		}
-		return ec_single_from_unkeyed_container(doc:doc, arr:arr, codingPath:[], logLevel:logLevel)
+		return ec_single_from_unkeyed_container(doc:doc, arr:arr, codingPath:[], logger:logger)
 		#else
 		return ec_single_from_unkeyed_container(doc:doc, arr:arr, codingPath:[])
 		#endif
@@ -210,19 +201,14 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 	private let assignKey:UnsafeMutablePointer<yyjson_mut_val>
 
 	#if QUICKJSON_SHOULDLOG
-	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level = .critical) {
+	private let logger:Logger?
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logger:Logging.Logger?) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
-		var buildLogger = Encoding.logger
-		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
+		var buildLogger = logger
+		buildLogger?[metadataKey:"iid"] = "\(iid)"
+		buildLogger?[metadataKey:"type"] = "encoder_from_keyed_container"
 		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: encoder_from_keyed_container.init()")
-		defer {
-			buildLogger.trace("exit: encoder_from_keyed_container.init()")
-		}
+		buildLogger?.debug("instance init")
 		self.doc = doc
 		self.obj = obj
 		self.assignKey = assignKey
@@ -238,9 +224,9 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 	/// retrieve a keyed container for this encoder
 	internal func container<Key>(keyedBy type:Key.Type) -> KeyedEncodingContainer<Key> where Key:CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_keyed_container.container(keyedBy:)")
+		self.logger?.debug("enter: container<Key>(keyedBy:)")
 		defer {
-			self.logger.trace("exit: encoder_from_keyed_container.container(keyedBy:)")
+			self.logger?.trace("exit: container<Key>(keyedBy:)")
 		}
 		#endif
 
@@ -251,18 +237,18 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 		yyjson_mut_obj_put(obj, assignKey, newObject)
 
 		#if QUICKJSON_SHOULDLOG
-		return KeyedEncodingContainer(ec_keyed(doc:self.doc, root:newObject, logLevel:self.logLevel))
+		return KeyedEncodingContainer(ec_keyed(doc:doc, root:newObject, logger:logger))
 		#else
-		return KeyedEncodingContainer(ec_keyed(doc:self.doc, root:newObject))
+		return KeyedEncodingContainer(ec_keyed(doc:doc, root:newObject))
 		#endif
 	}
 
 	/// retrieve an unkeyed container for this encoder
 	internal func unkeyedContainer() -> UnkeyedEncodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_keyed_container.unkeyedContainer()")
+		self.logger?.debug("enter: unkeyedContainer()")
 		defer {
-			self.logger.trace("exit: encoder_from_keyed_container.unkeyedContainer()")
+			self.logger?.trace("exit: unkeyedContainer()")
 		}
 		#endif
 
@@ -273,23 +259,23 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 		yyjson_mut_obj_put(obj, assignKey, newObject)
 
 		#if QUICKJSON_SHOULDLOG
-		return ec_unkeyed(doc:self.doc, root:newObject, logLevel:self.logLevel)
+		return ec_unkeyed(doc:doc, root:newObject, logger:logger)
 		#else
-		return ec_unkeyed(doc:self.doc, root:newObject)
+		return ec_unkeyed(doc:doc, root:newObject)
 		#endif
 	}
 
 	/// retrieve the single value container for this encoder
 	internal func singleValueContainer() -> SingleValueEncodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: encoder_from_keyed_container.singleValueContainer()")
+		self.logger?.debug("enter: singleValueContainer()")
 		defer {
-			self.logger.trace("exit: encoder_from_keyed_container.singleValueContainer()")
+			self.logger?.trace("exit: singleValueContainer()")
 		}
 		#endif
 		
 		#if QUICKJSON_SHOULDLOG
-		return ec_single_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey, codingPath:[], logLevel:logLevel)
+		return ec_single_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey, codingPath:[], logger:logger)
 		#else
 		return ec_single_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey, codingPath: [])
 		#endif
