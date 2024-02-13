@@ -2,7 +2,7 @@
 
 - Improved chaotic frontend API surface from `v1.x.x` tags.
 
-- Now BYO `Logger`. Enabling `QUICKJSON_SHOULDLOG` exposes an argument that allows a developer to pass a pre-configured Logger of their choice.
+- Now BYO `Logger`. Enabling `QUICKJSON_SHOULDLOG` exposes an argument on all frontend functions that allows a developer to pass a pre-configured Logger of their choice.
 
 - Rectified encoding bug with keyed containers with nested objects.
 
