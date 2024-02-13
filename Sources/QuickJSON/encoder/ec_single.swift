@@ -43,9 +43,14 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let nilVal = yyjson_mut_null(doc)
 		guard nilVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, nilVal)
+		guard yyjson_mut_arr_append(arr, nilVal) == true else {
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a bool value
@@ -59,9 +64,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		
 		let boolVal = yyjson_mut_bool(doc, value)
 		guard boolVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, boolVal)
+		guard yyjson_mut_arr_append(arr, boolVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a string value
@@ -75,9 +88,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		
 		let stringVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
 		guard stringVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, stringVal)
+		guard yyjson_mut_arr_append(arr, stringVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a double value
@@ -90,9 +111,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		#endif
 		let doubleVal = yyjson_mut_real(doc, value)
 		guard doubleVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, doubleVal)
+		guard yyjson_mut_arr_append(arr, doubleVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a float value
@@ -106,9 +135,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		
 		let floatVal = yyjson_mut_real(doc, Double(value))
 		guard floatVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, floatVal)
+		guard yyjson_mut_arr_append(arr, floatVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode an int value
@@ -122,9 +159,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode an int8 value
@@ -138,9 +183,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode an int16 value
@@ -154,9 +207,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode an int32 value
@@ -170,9 +231,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode an int64 value
@@ -186,9 +255,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_int(doc, value)
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a uint value
@@ -202,9 +279,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a uint8 value
@@ -218,9 +303,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a uint16 value
@@ -234,9 +327,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a uint32 value
@@ -250,9 +351,17 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode a uint64 value
@@ -266,17 +375,25 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 		let intVal = yyjson_mut_uint(doc, value)
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
+		guard yyjson_mut_arr_append(arr, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to append value to array")
+			#endif
+			throw Encoding.Error.assignmentError
+		}
 	}
 
 	/// encode an encodable value
 	internal func encode<T>(_ value:T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		logger?.debug("enter: encode<\(String(describing:T.self))>(_:\(String(describing:T.self)))")
+		logger?.debug("enter: encode<T>(_:T)")
 		defer {
-			logger?.trace("exit: encode<\(String(describing:T.self))>(_:\(String(describing:T.self)))")
+			logger?.trace("exit: encode<T>(_:T)")
 		}
 		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:arr, logger:logger))
 		#else
@@ -335,11 +452,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let newVal = yyjson_mut_null(doc)
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize null value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign nil value to object key.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -356,11 +479,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let newVal = yyjson_mut_bool(doc, value)
 		guard newVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, newVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -377,11 +506,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let stringVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
 		guard stringVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, stringVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -398,11 +533,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let doubleVal = yyjson_mut_real(doc, value)
 		guard doubleVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, doubleVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -419,11 +560,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let floatVal = yyjson_mut_real(doc, Double(value))
 		guard floatVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, floatVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -440,11 +587,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -461,11 +614,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -482,11 +641,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -503,11 +668,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let intVal = yyjson_mut_int(doc, Int64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -524,11 +695,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let intVal = yyjson_mut_int(doc, value)
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -545,11 +722,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		// create the new value
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -565,10 +748,16 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -584,11 +773,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -604,11 +799,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 		let intVal = yyjson_mut_uint(doc, UInt64(value))
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -624,11 +825,17 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 
 		let intVal = yyjson_mut_uint(doc, value)
 		guard intVal != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to initialize value.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 		
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger?.error("unable to assign value to object.")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -636,9 +843,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	/// encode an encodable value
 	internal func encode<T>(_ value:T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		logger?.debug("enter: encode<\(String(describing:T.self))>(_:\(String(describing:T.self)))")
+		logger?.debug("enter: encode<T>(_:T)")
 		defer {
-			logger?.trace("exit: encode<\(String(describing:T.self))>(_:\(String(describing:T.self)))")
+			logger?.trace("exit: encode<T>(_:T)")
 		}
 		try value.encode(to:encoder_from_keyed_container(doc:self.doc, obj:self.obj, assignKey:assignKey, codingPath:self.codingPath, logger:logger))
 		#else
@@ -1005,9 +1212,9 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 	/// encode an encodable value
 	internal func encode<T>(_ value:T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		logger?.debug("enter: encode<\(String(describing:T.self))>(_:\(String(describing:T.self)))")
+		logger?.debug("enter: encode<T>(_:T)")
 		defer {
-			logger?.trace("exit: encode<\(String(describing:T.self))>(_:\(String(describing:T.self)))")
+			logger?.trace("exit: encode<T>(_:T)")
 		}
 		try value.encode(to:encoder_from_root(doc:self.doc, logger:logger))
 		#else

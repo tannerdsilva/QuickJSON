@@ -4,10 +4,9 @@ import yyjson
 #if QUICKJSON_SHOULDLOG
 import Logging
 /// the default logger for quickjson.
-internal func makeDefaultLogger(label:String, logLevel:Logger.Level) -> Logger {
+internal func makeDefaultLogger(label:String, logLevel:Logger.Level = .debug) -> Logger {
 	var newLogger = Logger(label:label)
 	newLogger.logLevel = logLevel
-	newLogger.notice("quickjson was built with QUICKJSON_SHOULDLOG. this option enables the internal logging system in QuickJSON. TO ENSURE BEST PERFORMANCE FOR USERS, only enable this option during development.")
 	return newLogger
 }
 ///	indicates if the current build of quickjson was compiled with logging enabled. this will indicate `true` if `QUICKJSON_SHOULDLOG` is defined.

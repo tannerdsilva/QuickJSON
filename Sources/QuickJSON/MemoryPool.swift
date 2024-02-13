@@ -5,7 +5,7 @@ import yyjson
 public struct Memory {
 	
 	/// various ways that the memory backing for quickjson can be managed.
-	public enum Configuration {
+	public enum Configuration:Sendable {
 		/// memory should be automatically and dynamically claimed as needed.
 		case automatic
 
@@ -14,13 +14,13 @@ public struct Memory {
 	}
 
 	/// a "region" of memory that can be used to encode or decode JSON data 
-	public final class Region {
+	public final class Region:Sendable {
 		/// thrown when `malloc` fails to allocate memory for the memory region.
 		public struct MemoryAllocationError:Swift.Error  {}
 		/// thrown when ``yyjson_alc_pool_init`` fails to initialize with a given buffer.
 		public struct InitializationError:Swift.Error {}
 
-		internal var alc:yyjson_alc
+		private let alc:yyjson_alc
 		private let bufferPointer:UnsafeMutableRawPointer
 		internal let bufferSize:size_t
 
@@ -53,7 +53,8 @@ public struct Memory {
 
 		/// exposes the underlying yyjson_alc for use in other functions.
 		internal func expose<R>(_ exposureBlock:(inout yyjson_alc) throws -> R) rethrows -> R {
-			return try exposureBlock(&self.alc)
+			var alcMutate = self.alc
+			return try exposureBlock(&alcMutate)
 		}
 
 		/// frees the enclosed buffer when the memory pool is deinitialized.

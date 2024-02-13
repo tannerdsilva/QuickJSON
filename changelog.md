@@ -1,4 +1,16 @@
-# v1.1.0
+### v2.0.0
+
+- Improved chaotic frontend API surface from `v1.x.x` tags.
+
+- Now BYO `Logger`. Enabling `QUICKJSON_SHOULDLOG` exposes an argument that allows a developer to pass a pre-configured Logger of their choice.
+
+- Rectified encoding bug with keyed containers with nested objects.
+
+- Simplified base API for encoding and decoding that is based on raw pointer memory.
+
+	- Extensions continue to provide high-level and convenient support for an assortment of "data-like" programming objects.
+
+## v1.1.0
 
 - Improvements to decoding.
 

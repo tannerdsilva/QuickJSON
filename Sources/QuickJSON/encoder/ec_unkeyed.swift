@@ -96,7 +96,7 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 		#if DEBUG
 		assert(yyjson_mut_arr_append(root, newObj) == true)
 		#else
-		_ yyjson_mut_arr_append(root, newObj)
+		_ = yyjson_mut_arr_append(root, newObj)
 		#endif
 		
 		count += 1
