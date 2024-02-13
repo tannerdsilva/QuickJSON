@@ -39,6 +39,31 @@ public func decode<R>(
 }
 #endif
 
+#if QUICKJSON_SHOULDLOG
+/// decode a value from a json document
+/// - parameters:
+/// 	- type: the type of the value to decode
+/// 	- byteArray: the bytes to decode
+/// 	- flags: the decoding flags to use
+/// 	- memory: the memory configuration to use
+/// 	- logger: the log level to use for this job
+/// - returns: the decoded value
+public func decode<R>(_ type:R.Type, from byteArray:[UInt8], flags:Decoding.Flags = Decoding.Flags(), memory memconfig:Memory.Configuration = .automatic, logger immutableLoggerIn:Logging.Logger?) throws -> R where R:Decodable {
+	return try decode(type, ptr:byteArray, size:byteArray.count, flags:flags, memory:memconfig, logger:immutableLoggerIn)
+}
+#else
+/// decode a value from a json document
+/// - parameters:
+/// 	- type: the type of the value to decode
+/// 	- byteArray: the bytes to decode
+/// 	- flags: the decoding flags to use
+/// 	- memory: the memory configuration to use
+/// - returns: the decoded value
+public func decode<R>(_ type:R.Type, from byteArray:[UInt8], flags:Decoding.Flags = Decoding.Flags(), memory memconfig:Memory.Configuration = .automatic) throws -> R where R:Decodable {
+	return try decode(type, ptr:byteArray, size:byteArray.count, flags:flags, memory:memconfig)
+}
+#endif
+
 // MARK: Decode with Handler
 #if QUICKJSON_SHOULDLOG
 
