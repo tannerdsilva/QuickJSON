@@ -1,4 +1,12 @@
-# v1.1.0
+### v1.1.2
+
+- Fixed memory leak.
+
+### v1.1.1
+
+- Updated to yyjson 0.8.0
+
+## v1.1.0
 
 - Improvements to decoding.
 

@@ -12,6 +12,9 @@ extension UnsafeMutablePointer where Pointee == yyjson_mut_doc {
 			case nil:
 				throw Encoding.Error.memoryAllocationFailure
 			default:
+				defer {
+					free(outputDat)
+				}
 				guard errInfo.code == 0 else {
 					throw Encoding.Error.assignmentError
 				}
