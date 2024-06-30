@@ -12,11 +12,11 @@
       },
       {
         "package": "yyjson",
-        "repositoryURL": "https://github.com/ibireme/yyjson.git",
+        "repositoryURL": "https://github.com/tannerdsilva/yyjson.git",
         "state": {
-          "branch": null,
-          "revision": "e01ae9d89eaf858894d366169329097171a28d67",
-          "version": "0.8.0"
+          "branch": "memleak",
+          "revision": "04632c8a904f6140c263bab500b57d03350c216b",
+          "version": null
         }
       }
     ]
