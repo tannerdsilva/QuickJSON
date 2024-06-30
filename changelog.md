@@ -1,4 +1,8 @@
-### v2.0.0
+# v2.0.1
+
+- Fixed memory leak.
+
+# v2.0.0
 
 - Improved chaotic frontend API surface from `v1.x.x` tags.
 

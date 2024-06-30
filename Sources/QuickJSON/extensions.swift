@@ -17,6 +17,9 @@ extension UnsafeMutablePointer where Pointee == yyjson_mut_doc {
 				logger?.error("internal memory failure while exporting json document bytes")
 				throw Encoding.Error.memoryAllocationFailure
 			default:
+				defer {
+					free(outputDat)
+				}
 				guard errInfo.code == 0 else {
 					logger?.error("nonzero return code while exporting json document bytes")
 					throw Encoding.Error.assignmentError
@@ -41,6 +44,9 @@ extension UnsafeMutablePointer where Pointee == yyjson_mut_doc {
 			case nil:
 				throw Encoding.Error.memoryAllocationFailure
 			default:
+				defer {
+					free(outputDat)
+				}
 				guard errInfo.code == 0 else {
 					throw Encoding.Error.assignmentError
 				}
