@@ -12,281 +12,232 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	#endif
+
 	/// initialize a new single value container from an unkeyed parent.
 	/// - parameter doc: the document this container belongs to
 	/// - parameter arr: the array this container will assign values to
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey]) {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
+		#if QUICKJSON_SHOULDLOG
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
+		buildLogger[metadataKey: "doc"] = "\(doc.hashValue)"
+		buildLogger[metadataKey: "arr"] = "\(arr.hashValue)"
 		self.logger = buildLogger
-		self.logLevel = logLevel
 		buildLogger.debug("enter: ec_single_from_unkeyed_container.init(doc:arr:codingPath:)")
 		defer {
 			buildLogger.trace("exit: ec_single_from_unkeyed_container.init(doc:arr:codingPath:)")
 		}
+		#endif
 		self.doc = doc
 		self.arr = arr
 	}
-	#else
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, arr:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey]) {
-		self.doc = doc
-		self.arr = arr
-	}
-	#endif
 
 	/// encode a nil value
-	internal func encodeNil() throws {
+	internal borrowing func encodeNil() throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encodeNil()")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encodeNil()")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let nilVal = yyjson_mut_null(doc)
-		guard nilVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_null(doc)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, nilVal)
 	}
 
 	/// encode a bool value
-	internal func encode(_ value:Bool) throws {
+	internal borrowing func encode(_ value:consuming Bool) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let boolVal = yyjson_mut_bool(doc, value)
-		guard boolVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_bool(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, boolVal)
 	}
 
 	/// encode a string value
-	internal func encode(_ value:String) throws {
+	internal borrowing func encode(_ value:borrowing String) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let stringVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
-		guard stringVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_strncpy(doc, value, value.utf8.count)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, stringVal)
 	}
 
 	/// encode a double value
-	internal func encode(_ value:Double) throws {
+	internal borrowing func encode(_ value:consuming Double) throws {
 		#if QUICKJSON_SHOULDLOG
 		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
 		defer {
 			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
 		}
 		#endif
-		let doubleVal = yyjson_mut_real(doc, value)
-		guard doubleVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_real(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, doubleVal)
 	}
 
 	/// encode a float value
-	internal func encode(_ value:Float) throws {
+	internal borrowing func encode(_ value:consuming Float) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let floatVal = yyjson_mut_real(doc, Double(value))
-		guard floatVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_real(doc, Double(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, floatVal)
 	}
 
 	/// encode an int value
-	internal func encode(_ value:Int) throws {
+	internal borrowing func encode(_ value:consuming Int) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode an int8 value
-	internal func encode(_ value:Int8) throws {
+	internal borrowing func encode(_ value:consuming Int8) throws {
 		#if QUICKJSON_SHOULDLOG
 		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
 		defer {
 			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode an int16 value
-	internal func encode(_ value:Int16) throws {
+	internal borrowing func encode(_ value:consuming Int16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode an int32 value
-	internal func encode(_ value:Int32) throws {
+	internal borrowing func encode(_ value:consuming Int32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode an int64 value
-	internal func encode(_ value:Int64) throws {
+	internal func encode(_ value:consuming Int64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_int(doc, value)
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode a uint value
-	internal func encode(_ value:UInt) throws {
+	internal borrowing func encode(_ value:consuming UInt) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode a uint8 value
-	internal func encode(_ value:UInt8) throws {
+	internal borrowing func encode(_ value:consuming UInt8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode a uint16 value
-	internal func encode(_ value:UInt16) throws {
+	internal borrowing func encode(_ value:consuming UInt16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode a uint32 value
-	internal func encode(_ value:UInt32) throws {
+	internal borrowing func encode(_ value:consuming UInt32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode a uint64 value
-	internal func encode(_ value:UInt64) throws {
+	internal borrowing func encode(_ value:consuming UInt64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, value)
-		guard intVal != nil else {
+		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
-		yyjson_mut_arr_append(arr, intVal)
 	}
 
 	/// encode an encodable value
-	internal func encode<T>(_ value:T) throws where T:Encodable {
+	internal borrowing func encode<T>(_ value:consuming T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_unkeyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_unkeyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
-		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:arr, logLevel:self.logLevel))
-		#else
-		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:arr))
 		#endif
+		try value.encode(to:encoder_from_unkeyed_container(doc:doc, arr:arr))
 	}
 
 	// required by swift. unused.
@@ -303,358 +254,250 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 	private let obj:UnsafeMutablePointer<yyjson_mut_val>
 	private let assignKey:UnsafeMutablePointer<yyjson_mut_val>
 
-
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	#endif
 	/// initialize a new single value container that will assign a value to a parent object.
 	/// - parameter doc: the document to encode into
 	/// - parameter obj: the object to encode into
 	/// - parameter assignKey: the key to use to assign the single value to the parent object after it is encoded
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey], logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey]) {
+		#if QUICKJSON_SHOULDLOG
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
+		buildLogger[metadataKey: "doc"] = "\(doc.hashValue)"
+		buildLogger[metadataKey: "obj"] = "\(obj.hashValue)"
+		buildLogger[metadataKey: "assignKey"] = "\(assignKey.hashValue)"
 		self.logger = buildLogger
-		self.logLevel = logLevel
 		buildLogger.debug("enter: ec_single_from_keyed_container.init()")
 		defer {
 			buildLogger.trace("exit: ec_single_from_keyed_container.init()")
 		}
+		#endif
 		self.doc = doc
 		self.obj = obj
 		self.assignKey = assignKey
 	}
-	#else
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, obj:UnsafeMutablePointer<yyjson_mut_val>, assignKey:UnsafeMutablePointer<yyjson_mut_val>, codingPath:[CodingKey]) {
-		self.doc = doc
-		self.obj = obj
-		self.assignKey = assignKey
-	}
-	#endif
 
 	/// encode a nil value
-	internal func encodeNil() throws {
+	internal borrowing func encodeNil() throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encodeNil()")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encodeNil()")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let newVal = yyjson_mut_null(doc)
-		guard newVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, newVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_null(doc)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a bool value
-	internal func encode(_ value:Bool) throws {
+	internal borrowing func encode(_ value:consuming Bool) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let newVal = yyjson_mut_bool(doc, value)
-		guard newVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, newVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_bool(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a string value
-	internal func encode(_ value:String) throws {
+	internal borrowing func encode(_ value:borrowing String) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let stringVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
-		guard stringVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, stringVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_strncpy(doc, value, value.utf8.count)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a double value
-	internal func encode(_ value:Double) throws {
+	internal borrowing func encode(_ value:consuming Double) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let doubleVal = yyjson_mut_real(doc, value)
-		guard doubleVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, doubleVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_real(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a float value
-	internal func encode(_ value:Float) throws {
+	internal func encode(_ value:consuming Float) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let floatVal = yyjson_mut_real(doc, Double(value))
-		guard floatVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, floatVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_real(doc, Double(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a int value
-	internal func encode(_ value:Int) throws {
+	internal borrowing func encode(_ value:consuming Int) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a int8 value
-	internal func encode(_ value:Int8) throws {
+	internal borrowing func encode(_ value:consuming Int8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a int16 value
-	internal func encode(_ value:Int16) throws {
+	internal borrowing func encode(_ value:consuming Int16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		// create the new value
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a int32 value
-	internal func encode(_ value:Int32) throws {
+	internal borrowing func encode(_ value:consuming Int32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a int64 value
-	internal func encode(_ value:Int64) throws {
+	internal borrowing func encode(_ value:consuming Int64) throws {
 		#if QUICKJSON_SHOULDLOG
 		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
 		defer {
 			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
 		}
 		#endif
-		
-		// create the new value
-		let intVal = yyjson_mut_int(doc, value)
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a uint value
-	internal func encode(_ value:UInt) throws {
+	internal borrowing func encode(_ value:consuming UInt) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a uint8 value
-	internal func encode(_ value:UInt8) throws {
+	internal borrowing func encode(_ value:consuming UInt8) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a uint16 value
-	internal func encode(_ value:UInt16) throws {
+	internal borrowing func encode(_ value:consuming UInt16) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a uint32 value
-	internal func encode(_ value:UInt32) throws {
+	internal borrowing func encode(_ value:consuming UInt32) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a uint64 value
-	internal func encode(_ value:UInt64) throws {
+	internal borrowing func encode(_ value:consuming UInt64) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, value)
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
 		// assign the new value to the object
-		guard yyjson_mut_obj_put(obj, assignKey, intVal) == true else {
+		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an encodable value
-	internal func encode<T>(_ value:T) throws where T :Encodable {
+	internal borrowing func encode<T>(_ value:consuming T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_keyed_container.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_keyed_container.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
-		try value.encode(to:encoder_from_keyed_container(doc:self.doc, obj:self.obj, assignKey:assignKey, codingPath:self.codingPath, logLevel:self.logLevel))
-		#else
-		try value.encode(to:encoder_from_keyed_container(doc:self.doc, obj:self.obj, assignKey:assignKey, codingPath:self.codingPath))
 		#endif
+		try value.encode(to:encoder_from_keyed_container(doc:doc, obj:obj, assignKey:assignKey, codingPath:codingPath))
 	}
 
 	// required by swift. unused.
@@ -671,319 +514,197 @@ internal struct ec_single_from_root:Swift.SingleValueEncodingContainer {
 
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	#endif
 	/// initialize a new single value container that encodes directly to the root of the document
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>) {
+		#if QUICKJSON_SHOULDLOG
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
+		buildLogger[metadataKey: "doc"] = "\(doc.hashValue)"
 		self.logger = buildLogger
-		self.logLevel = logLevel
 		buildLogger.debug("enter: ec_single_from_root.init(doc:)")
 		defer {
 			buildLogger.trace("exit: ec_single_from_root.init(doc:)")
 		}
+		#endif
 		self.doc = doc
 	}
-	#else
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>) {
-		self.doc = doc
-	}
-	#endif
 
 	/// encode a nil value
-	internal func encodeNil() throws {
+	internal borrowing func encodeNil() {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encodeNil()")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encodeNil()")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let newVal = yyjson_mut_null(doc)
-		guard newVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, newVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_null(doc)!)
 	}
 
 	/// encode a boolean value
-	internal func encode(_ value:Bool) throws {
+	internal borrowing func encode(_ value:consuming Bool) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let newVal = yyjson_mut_bool(doc, value)
-		guard newVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, newVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_bool(doc, value)!)
 	}
 
 	/// encode a string value
-	internal func encode(_ value:String) throws {
+	internal borrowing func encode(_ value:borrowing String) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let stringVal = yyjson_mut_strncpy(doc, value, value.utf8.count)
-		guard stringVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, stringVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_strncpy(doc, value, value.utf8.count)!)
 	}
 
 	/// encode a double value
-	internal func encode(_ value:Double) throws {
+	internal borrowing func encode(_ value:consuming Double) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let doubleVal = yyjson_mut_real(doc, value)
-		guard doubleVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, doubleVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_real(doc, value)!)
 	}
 
 	/// encode a float value
-	internal func encode(_ value:Float) throws {
+	internal borrowing func encode(_ value:consuming Float) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let floatVal = yyjson_mut_real(doc, Double(value))
-		guard floatVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, floatVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_real(doc, Double(value))!)
 	}
 
 	/// encode an int value
-	internal func encode(_ value:Int) throws {
+	internal borrowing func encode(_ value:consuming Int) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_int(doc, Int64(value))!)
 	}
 
 	/// encode an int8 value
-	internal func encode(_ value:Int8) throws {
+	internal borrowing func encode(_ value:consuming Int8) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_int(doc, Int64(value))!)
 	}
 
 	/// encode an int16 value
-	internal func encode(_ value:Int16) throws {
+	internal borrowing func encode(_ value:consuming Int16) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_int(doc, Int64(value))!)
 	}
 
 	/// encode an int32 value
-	internal func encode(_ value:Int32) throws {
+	internal borrowing func encode(_ value:consuming Int32) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_int(doc, Int64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_int(doc, Int64(value))!)
 	}
 
 	/// encode an int64 value
-	internal func encode(_ value:Int64) throws {
+	internal borrowing func encode(_ value:consuming Int64) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_int(doc, value)
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_int(doc, value)!)
 	}
 
 	/// encode a uint value
-	internal func encode(_ value:UInt) throws {
+	internal borrowing func encode(_ value:consuming UInt) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		// create the new value
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_uint(doc, UInt64(value))!)
 	}
 
 	/// encode a uint8 value
-	internal func encode(_ value:UInt8) throws {
+	internal borrowing func encode(_ value:consuming UInt8) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_uint(doc, UInt64(value))!)
 	}
 
 	/// encode a uint16 value
-	internal func encode(_ value:UInt16) throws {
+	internal borrowing func encode(_ value:consuming UInt16) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_uint(doc, UInt64(value))!)
 	}
 
 	/// encode a uint32 value
-	internal func encode(_ value:UInt32) throws {
+	internal borrowing func encode(_ value:consuming UInt32) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let intVal = yyjson_mut_uint(doc, UInt64(value))
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_uint(doc, UInt64(value))!)
 	}
 
 	/// encode a uint64 value
-	internal func encode(_ value:UInt64) throws {
+	internal borrowing func encode(_ value:consuming UInt64) {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let intVal = yyjson_mut_uint(doc, value)
-		guard intVal != nil else {
-			throw Encoding.Error.assignmentError
-		}
-		
-		// assign the new value as root
-		yyjson_mut_doc_set_root(doc, intVal)
+		yyjson_mut_doc_set_root(doc, yyjson_mut_uint(doc, value)!)
 	}
 
 	/// encode an encodable value
-	internal func encode<T>(_ value:T) throws where T :Encodable {
+	internal borrowing func encode<T>(_ value:consuming T) throws where T:Encodable {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_single_from_root.encode(_:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_single_from_root.encode(_:)")
+			logger.trace("exit: \(#function)")
 		}
-		try value.encode(to:encoder_from_root(doc:self.doc, logLevel:self.logLevel))
-		#else
-		try value.encode(to:encoder_from_root(doc:self.doc))
 		#endif
+		try value.encode(to:encoder_from_root(doc:doc))
 	}
 
 	// required by swift. unused.

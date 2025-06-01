@@ -5,32 +5,6 @@ import yyjson
 import Logging
 #endif
 
-// MARK: Encoding Data
-#if QUICKJSON_SHOULDLOG
-/// encode an object into a json based byte encoding.
-/// - parameter object: the object to encode.
-/// - parameter flags: the option flags to use for this encoding. default flag values are used if none are specified.
-/// - parameter logLevel: the log level to use for this encoding.
-public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flags(), memory memconfig:Memory.Configuration = .automatic, logLevel:Logging.Logger.Level = .critical) throws -> [UInt8] {
-	let newDoc = yyjson_mut_doc_new(nil)
-	guard newDoc != nil else {
-		throw Encoding.Error.memoryAllocationFailure
-	}
-	defer {
-		yyjson_mut_doc_free(newDoc)
-	}
-	switch memconfig {
-	case .automatic:
-		try object.encode(to:encoder_from_root(doc:newDoc!, logLevel:logLevel))
-	case .preallocated(let region):
-		try region.expose { (alc) -> Void in
-			try object.encode(to:encoder_from_root(doc:newDoc!, logLevel:logLevel))
-		}
-	}
-	
-	return try newDoc!.exportDocumentBytes(flags:flags)
-}
-#else
 /// encode an object into a json based byte encoding.
 /// - parameter object: the object to encode.
 /// - parameter flags: the option flags to use for this encoding. default flag values are used if none are specified.
@@ -50,7 +24,7 @@ public func encode<T:Encodable>(
 
 	return try newDoc!.exportDocumentBytes(flags:flags)
 }
-#endif
+
 /// namespace related to encoding.
 public struct Encoding {
 	/// errors that may occur during encoding

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.5
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 let package = Package(
@@ -11,7 +11,7 @@ let package = Package(
 	],
 	dependencies: [
 		/// high performance json parsing library
-		.package(url:"https://github.com/ibireme/yyjson.git", "0.8.0"..<"0.9.0"),
+		.package(url:"https://github.com/ibireme/yyjson.git", "0.11.0"..<"1.0.0"),
 
 		/// swift logging (helpful for debugging, not built into release builds)
 		.package(url:"https://github.com/apple/swift-log.git", from:"1.0.0")

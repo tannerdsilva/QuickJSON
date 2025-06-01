@@ -15,361 +15,265 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	#endif
+
 	/// initializes a new keyed container
 	/// - parameter doc: the document that this container is writing to
 	/// - parameter root: the root object of the json document. this is where the container will write its keys and values to.
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>, logLevel:Logging.Logger.Level = .critical) {
+	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>) {
+		#if QUICKJSON_SHOULDLOG
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Encoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
+		buildLogger[metadataKey: "doc"] = "\(doc.hashValue)"
+		buildLogger[metadataKey: "root"] = "\(root.hashValue)"
 		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: ec_keyed.init(doc:root:)")
+		buildLogger.debug("enter: \(#function)")
 		defer {
-			buildLogger.trace("exit: ec_keyed.init(doc:root:)")
-		}
-		self.doc = doc
-		self.root = root
-	}
-	#else
-	internal init(doc:UnsafeMutablePointer<yyjson_mut_doc>, root:UnsafeMutablePointer<yyjson_mut_val>) {
-		self.doc = doc
-		self.root = root
-	}
-	#endif
-
-	/// encode a null value for the given key
-	internal func encodeNil(forKey key:K) throws {
-		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encodeNil(forKey:K)")
-		defer {
-			self.logger.trace("exit: ec_keyed.encodeNil(forKey:K)")
+			buildLogger.trace("exit: \(#function)")
 		}
 		#endif
+		self.doc = doc
+		self.root = root
+	}
 
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
+
+	/// encode a null value for the given key
+	internal borrowing func encodeNil(forKey key:borrowing K) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(#function)")
+		defer {
+			logger.trace("exit: \(#function)")
 		}
-		let makeNull = yyjson_mut_null(doc)
-		guard yyjson_mut_obj_put(root, key, makeNull) == true else {
+		#endif
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_null(doc)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a boolean value for the given key
-	internal func encode(_ value:Bool, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming Bool, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:Bool.Type, forKey:K)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:Bool.Type, forKey:K)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeBool = yyjson_mut_bool(doc, value)
-		guard yyjson_mut_obj_put(root, key, makeBool) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_bool(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:String, forKey key:K) throws {
+	internal borrowing func encode(_ value:borrowing String, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:String.Type, forKey:K)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:String.Type, forKey:K)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeString = yyjson_mut_strncpy(doc, value, value.utf8.count)
-		guard yyjson_mut_obj_put(root, key, makeString) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_strncpy(doc, value, value.utf8.count)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a double value for the given key
-	internal func encode(_ value:Double, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming Double, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:Double.Type, forKey:K)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:Double.Type, forKey:K)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeDouble = yyjson_mut_real(doc, value)
-		guard yyjson_mut_obj_put(root, key, makeDouble) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_real(doc, value)!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode a float value for the given key
-	internal func encode(_ value:Float, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming Float, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
 
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeFloat = yyjson_mut_real(doc, Double(value))
-		guard yyjson_mut_obj_put(root, key, makeFloat) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_real(doc, Double(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:Int, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming Int, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeInt = yyjson_mut_int(doc, Int64(value))
-		guard yyjson_mut_obj_put(root, key, makeInt) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:Int8, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming Int8, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeInt8 = yyjson_mut_int(doc, Int64(value))
-		guard yyjson_mut_obj_put(root, key, makeInt8) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:Int16, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming Int16, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeInt16 = yyjson_mut_int(doc, Int64(value))
-		guard yyjson_mut_obj_put(root, key, makeInt16) == true else {
-			throw Encoding.Error.assignmentError
-		}
-
-	}
-
-	/// encode an integer value for the given key
-	internal func encode(_ value:Int32, forKey key:K) throws {
-		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
-		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
-		}
-		#endif
-		
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeInt32 = yyjson_mut_int(doc, Int64(value))
-		guard yyjson_mut_obj_put(root, key, makeInt32) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:Int64, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming Int32, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeInt64 = yyjson_mut_int(doc, Int64(value))
-		guard yyjson_mut_obj_put(root, key, makeInt64) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:UInt, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming Int64, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeUInt = yyjson_mut_uint(doc, UInt64(value))
-		guard yyjson_mut_obj_put(root, key, makeUInt) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:UInt8, forKey key:K) throws {
+	internal borrowing func encode(_ value:consuming UInt, forKey key:borrowing K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeUInt8 = yyjson_mut_uint(doc, UInt64(value))
-		guard yyjson_mut_obj_put(root, key, makeUInt8) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:UInt16, forKey key:K) throws {
+	internal borrowing func encode(_ value:UInt8, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeUInt16 = yyjson_mut_uint(doc, UInt64(value))
-		guard yyjson_mut_obj_put(root, key, makeUInt16) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:UInt32, forKey key:K) throws {
+	internal borrowing func encode(_ value:UInt16, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeUInt32 = yyjson_mut_uint(doc, UInt64(value))
-		guard yyjson_mut_obj_put(root, key, makeUInt32) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
 	/// encode an integer value for the given key
-	internal func encode(_ value:UInt64, forKey key:K) throws {
+	internal borrowing func encode(_ value:UInt32, forKey key:K) throws {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-
-		let key = key.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, key.stringValue.utf8.count)!
-		}
-		let makeUInt64 = yyjson_mut_uint(doc, UInt64(value))
-		guard yyjson_mut_obj_put(root, key, makeUInt64) == true else {
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
 			throw Encoding.Error.assignmentError
 		}
 	}
 
-	/// encode a float value for the given key
-	internal func encode<T>(_ value:T, forKey inputKey:K) throws where T :Encodable {
+	/// encode an integer value for the given key
+	internal borrowing func encode(_ value:consuming UInt64, forKey key:borrowing K) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(#function)")
+		defer {
+			logger.trace("exit: \(#function)")
+		}
+		#endif
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			throw Encoding.Error.assignmentError
+		}
+	}
+
+	/// encode an encodable value for the given key
+	internal borrowing func encode<T>(_ value:consuming T, forKey inputKey:consuming K) throws where T:Encodable {
+		let ik = inputKey
 		#if QUICKJSON_SHOULDLOG
 		self.logger.debug("enter: ec_keyed.encode(_:forKey:)")
 		defer {
 			self.logger.trace("exit: ec_keyed.encode(_:forKey:)")
 		}
 		#endif
-
-		let key = inputKey.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, inputKey.stringValue.utf8.count)!
-		}
-
-		#if QUICKJSON_SHOULDLOG
-		try value.encode(to:encoder_from_keyed_container(doc:doc, obj:root, assignKey:key, codingPath:codingPath + [inputKey], logLevel:self.logLevel))
-		#else
-		try value.encode(to:encoder_from_keyed_container(doc:doc, obj:root, assignKey:key, codingPath:codingPath + [inputKey]))
-		#endif
+		try value.encode(to:encoder_from_keyed_container(doc:doc, obj:root, assignKey:yyjson_mut_strncpy(doc, ik.stringValue, ik.stringValue.utf8.count)!, codingPath:codingPath + [ik]))
 	}
 
 	/// returns a keyed container for the given key
-	internal func nestedContainer<NestedKey>(keyedBy keyType:NestedKey.Type, forKey inputKey:K) -> KeyedEncodingContainer<NestedKey> where NestedKey :CodingKey {
+	internal borrowing func nestedContainer<NestedKey>(keyedBy keyType:NestedKey.Type, forKey inputKey:borrowing K) -> KeyedEncodingContainer<NestedKey> where NestedKey :CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.nestedContainer(keyedBy:forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.nestedContainer(keyedBy:forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
 		let newObj = yyjson_mut_obj(doc)!
-		assert(yyjson_mut_arr_append(self.root, newObj) == true)
-		
-		#if QUICKJSON_SHOULDLOG
-		return KeyedEncodingContainer(ec_keyed<NestedKey>(doc:doc, root:newObj, logLevel:self.logLevel))
-		#else
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, inputKey.stringValue, inputKey.stringValue.utf8.count)!, newObj) == true else {
+			fatalError("QuickJSON encoding error: could not put keyed container into root. this is an internal and fatal error. \(#file):\(#line) \(#function)")
+		}
 		return KeyedEncodingContainer(ec_keyed<NestedKey>(doc:doc, root:newObj))
-		#endif
 	}
 
 	/// returns an unkeyed container for the given key
-	internal func nestedUnkeyedContainer(forKey inputKey:K) -> UnkeyedEncodingContainer {
+	internal borrowing func nestedUnkeyedContainer(forKey inputKey:borrowing K) -> UnkeyedEncodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: ec_keyed.nestedUnkeyedContainer(forKey:)")
+		logger.debug("enter: \(#function)")
 		defer {
-			self.logger.trace("exit: ec_keyed.nestedUnkeyedContainer(forKey:)")
+			logger.trace("exit: \(#function)")
 		}
 		#endif
-		
-		let key = inputKey.stringValue.withCString { (cstr) in
-			return yyjson_mut_strncpy(doc, cstr, inputKey.stringValue.utf8.count)!
-		}
 		let makeNestedUnkeyedContainer = yyjson_mut_arr(doc)!
-		assert(yyjson_mut_obj_put(root, key, makeNestedUnkeyedContainer) == true)
-
-		#if QUICKJSON_SHOULDLOG
-		return ec_unkeyed(doc:doc, root:makeNestedUnkeyedContainer, logLevel:self.logLevel)
-		#else
+		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, inputKey.stringValue, inputKey.stringValue.utf8.count)!, makeNestedUnkeyedContainer) == true else {
+			fatalError("QuickJSON encoding error: could not put unkeyed container into root. this is an internal and fatal error. \(#file):\(#line) \(#function)")
+		}
 		return ec_unkeyed(doc:doc, root:makeNestedUnkeyedContainer)
-		#endif
 	}
 	
 	// required by swift. unimplemented
