@@ -144,7 +144,7 @@ public struct Decoding {
 		/// thrown when the decoder encounters a value that is not the type that was expected
 		case valueTypeMismatch(ValueTypeMismatchInfo)
 		/// additional information about the value type mismatch error
-		public struct ValueTypeMismatchInfo {
+		public struct ValueTypeMismatchInfo:Sendable {
 			public let expected:ValueType
 			public let found:ValueType
 			internal init(expected:ValueType, found:ValueType) {
@@ -157,7 +157,7 @@ public struct Decoding {
 		/// the root of the document could not be found
 		case documentParseError(ParseInfo)
 		/// detailed information about a parse error
-		public struct ParseInfo {
+		public struct ParseInfo:Sendable {
 			/// description of the error
 			let error:String
 			/// the buffer offset where the error occurred
@@ -187,7 +187,7 @@ public struct Decoding {
 	#endif
 
 	/// option flags for the decoder
-	public struct Flags:OptionSet {
+	public struct Flags:OptionSet, Sendable {
 		public let rawValue:UInt32
 		public init(rawValue:UInt32 = 0) { self.rawValue = rawValue }
 		public static let inSitu = Flags(rawValue:YYJSON_READ_INSITU)

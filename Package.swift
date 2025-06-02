@@ -1,32 +1,30 @@
 // swift-tools-version:6.0
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 let package = Package(
 	name: "QuickJSON",
-	products: [
+	products:[
 		.library(
-			name: "QuickJSON",
-			targets: ["QuickJSON"]
+			name:"QuickJSON",
+			targets:["QuickJSON"]
 		),
 	],
-	dependencies: [
-		/// high performance json parsing library
+	dependencies:[
+		// high performance json parsing library that this package wraps
 		.package(url:"https://github.com/ibireme/yyjson.git", "0.11.0"..<"1.0.0"),
-
-		/// swift logging (helpful for debugging, not built into release builds)
-		.package(url:"https://github.com/apple/swift-log.git", from:"1.0.0")
+		// swift logging (helpful for debugging, not built into release builds)
+		.package(url:"https://github.com/apple/swift-log.git", "1.0.0"..<"2.0.0")
 	],
-	targets: [
+	targets:[
 		.target(
 			name: "QuickJSON",
-			dependencies: [
+			dependencies:[
 				.product(name:"yyjson", package:"yyjson"),
 				.product(name:"Logging", package:"swift-log")
 			]
 		),
 		.testTarget(
-			name: "QuickJSONTests",
-			dependencies: ["QuickJSON"]
+			name:"QuickJSONTests",
+			dependencies:["QuickJSON"]
 		)
 	]
 )

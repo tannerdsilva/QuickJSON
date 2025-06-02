@@ -4,7 +4,7 @@ import yyjson
 #if QUICKJSON_SHOULDLOG
 import Logging
 /// the default logger for quickjson.
-internal func makeDefaultLogger(label:String, logLevel:Logger.Level) -> Logger {
+internal func makeDefaultLogger(label:consuming String, logLevel:Logger.Level) -> Logger {
 	var newLogger = Logger(label:label)
 	newLogger.logLevel = logLevel
 	newLogger.notice("quickjson was built with QUICKJSON_SHOULDLOG. this option enables the internal logging system in QuickJSON. TO ENSURE BEST PERFORMANCE FOR USERS, only enable this option during development.")
@@ -18,7 +18,7 @@ public let loggingEnabled = false
 #endif
 
 /// represents various JSON types. this is primarily used to describe type mismatches.
-public enum ValueType:UInt8 {
+public enum ValueType:UInt8, Sendable {
 	/// represents no value
 	case none = 0
 	/// represents a raw value

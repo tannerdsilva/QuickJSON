@@ -42,7 +42,7 @@ public struct Encoding {
 	#endif
 
 	/// option flags for the encoder
-	public struct Flags:OptionSet {
+	public struct Flags:OptionSet, Sendable{
 		/// the raw value of the option flags
 		public let rawValue:UInt32
 		/// initialize a flag option set with a given raw value
