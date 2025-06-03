@@ -33,6 +33,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_get_type(root) == YYJSON_TYPE_OBJ else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("root is not an object, found: \(ValueType(yyjson_get_type(root)))")
+			#endif
 			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected:ValueType.obj, found:ValueType(yyjson_get_type(root))))
 		}
 		self.root = root
@@ -91,7 +94,14 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		guard getKeyRoot != nil else {
 			throw Decoding.Error.notFound(key.stringValue)
 		}
-		return try getKeyRoot!.decodeString()
+		do {
+			return try getKeyRoot!.decodeString()
+		} catch let error {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to decode string for key \(key.stringValue): \(error)")
+			#endif
+			fatalError("This should work and it isn't and its very frustrating.")
+		}
 	}
 
 	/// decode a double value for the given key.

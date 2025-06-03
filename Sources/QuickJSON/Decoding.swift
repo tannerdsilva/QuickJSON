@@ -183,7 +183,7 @@ public struct Decoding {
 	#if QUICKJSON_SHOULDLOG
 	/// the default logger for any decoding operation. this may be replaced with a custom logger before operating quickjson.
 	/// - note: this logger is only used if `QUICKJSON_SHOULDLOG` is defined.	
-	public static let logger = makeDefaultLogger(label:"com.tannersilva.quickjson.decoding", logLevel:.trace)
+	public static let logger = makeDefaultLogger(label:"com.tannersilva.quickjson.decoding", logLevel:.debug)
 	#endif
 
 	/// option flags for the decoder

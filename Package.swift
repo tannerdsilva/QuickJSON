@@ -2,6 +2,9 @@
 import PackageDescription
 let package = Package(
 	name: "QuickJSON",
+	platforms:[
+		.macOS(.v13)
+	],
 	products:[
 		.library(
 			name:"QuickJSON",
@@ -22,14 +25,14 @@ let package = Package(
 				.product(name:"Logging", package:"swift-log")
 			],
 			swiftSettings:[
-				.define("QUICKJSON_SHOULDLOG"),
+				.define("QUICKJSON_SHOULDLOG", .when(configuration:.debug)),
 			]
 		),
 		.testTarget(
 			name:"QuickJSONTests",
 			dependencies:["QuickJSON"],
 			swiftSettings:[
-				.define("QUICKJSON_SHOULDLOG"),
+				.define("QUICKJSON_SHOULDLOG", .when(configuration:.debug)),
 			]
 		)
 	]

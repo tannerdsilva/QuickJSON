@@ -40,21 +40,27 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Decoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
-		self.logger = buildLogger
-		buildLogger.debug("enter: dc_unkeyed.init(root:)")
+		buildLogger.debug("enter: \(String(describing:Self.self)) : \(#function)")
 		defer {
-			buildLogger.trace("exit: dc_unkeyed.init(root:)")
+			buildLogger.trace("exit: \(String(describing:Self.self)) : \(#function)")
 		}
 		#endif
 		guard yyjson_get_type(root) == YYJSON_TYPE_ARR else {
+			#if QUICKJSON_SHOULDLOG
+			buildLogger.error("root is not an array, found: \(ValueType(yyjson_get_type(root)))")
+			#endif
 			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected:ValueType.arr, found:ValueType(yyjson_get_type(root))))
 		}
 		length = yyjson_arr_size(root)
+		#if QUICKJSON_SHOULDLOG
+		buildLogger[metadataKey: "unkeyed_item_count"] = "\(length)"
+		#endif
 		if length == 0 {
 			state = .end
 		} else {
 			state = .content(unsafe_yyjson_get_first(root))
 		}
+		self.logger = buildLogger
 	}
 
 	// called every time a value is decoded. 
