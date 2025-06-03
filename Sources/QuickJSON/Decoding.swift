@@ -138,7 +138,7 @@ public func decode<T:Decodable>(
 /// namespace related to decoding.
 public struct Decoding {
 	/// errors that can be thrown by the decoder
-	public enum Error:Swift.Error {
+	public enum Error:Swift.Error, CustomDebugStringConvertible {
 		/// thrown by an unkeyed decoding container when the bounds of the container have been exceeded
 		case contentOverflow
 		/// thrown when the decoder encounters a value that is not the type that was expected
@@ -153,7 +153,7 @@ public struct Decoding {
 			}
 		}
 		/// the key could not be found
-		case notFound
+		case notFound(String)
 		/// the root of the document could not be found
 		case documentParseError(ParseInfo)
 		/// detailed information about a parse error
@@ -183,7 +183,7 @@ public struct Decoding {
 	#if QUICKJSON_SHOULDLOG
 	/// the default logger for any decoding operation. this may be replaced with a custom logger before operating quickjson.
 	/// - note: this logger is only used if `QUICKJSON_SHOULDLOG` is defined.	
-	public static var logger = makeDefaultLogger(label:"com.tannersilva.quickjson.decoding", logLevel:.debug)
+	public static let logger = makeDefaultLogger(label:"com.tannersilva.quickjson.decoding", logLevel:.trace)
 	#endif
 
 	/// option flags for the decoder
@@ -200,4 +200,22 @@ public struct Decoding {
 
 	// nothing to see here
 	private init() {}
+}
+
+extension Decoding.Error {
+	/// a description of the error
+	public var debugDescription:String {
+		switch self {
+			case .contentOverflow:
+				return "QuickJSON.Decoding.Error.contentOverflow"
+			case .valueTypeMismatch(let info):
+				return "QuickJSON.Decoding.Error.valueTypeMismatch(expected:\(info.expected), found:\(info.found))"
+			case .notFound(let key):
+				return "QuickJSON.Decoding.Error.notFound(key:\(key))"
+			case .documentParseError(let info):
+				return "QuickJSON.Decoding.Error.documentParseError(error:\(info.error), offset:\(info.offset), code:\(info.code))"
+			case .documentRootError:
+				return "QuickJSON.Decoding.Error.documentRootError"
+		}
+	}
 }

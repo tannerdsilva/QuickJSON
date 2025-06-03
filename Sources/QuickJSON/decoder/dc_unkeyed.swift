@@ -6,13 +6,11 @@ import Logging
 #endif
 
 internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
-
 	/// helps ``dc_unkeyed`` keep track of its internal state
 	private enum ParseState {
 		/// there is content in the container
 		/// - argument 1: the next object in the array to consume
 		case content(UnsafeMutablePointer<yyjson_val>)
-
 		/// the end of the array has been reached
 		case end
 	}
@@ -33,6 +31,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
 	#endif
+
 	/// initialize an unkeyed container with the given root object.
 	/// - parameter root: the root object to decode.
 	/// - throws: `Decoding.Error.valueTypeMismatch` if the root object is not an array.
@@ -50,11 +49,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		guard yyjson_get_type(root) == YYJSON_TYPE_ARR else {
 			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected:ValueType.arr, found:ValueType(yyjson_get_type(root))))
 		}
-		self.length = yyjson_arr_size(root)
-		if self.length == 0 {
-			self.state = .end
+		length = yyjson_arr_size(root)
+		if length == 0 {
+			state = .end
 		} else {
-			self.state = .content(unsafe_yyjson_get_first(root))
+			state = .content(unsafe_yyjson_get_first(root))
 		}
 	}
 
@@ -62,33 +61,33 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	private mutating func increment() {
 		switch state {
 			case .end:
-			fatalError("increment called when at end of container")
+				fatalError("increment called when at end of container")
 			case .content(let root):
-			currentIndex += 1
-			switch currentIndex < length {
-				case true:
-				state = .content(unsafe_yyjson_get_next(root))
-				case false:
-				state = .end
-			}
+				currentIndex += 1
+				switch currentIndex < length {
+					case true:
+					state = .content(unsafe_yyjson_get_next(root))
+					case false:
+					state = .end
+				}
 		}
 	}
 
 	/// returns true if the next value in the container is null.
 	internal mutating func decodeNil() throws -> Bool {
 		#if QUICKJSON_SHOULDLOG
-		self.logger.debug("enter: dc_unkeyed.decodeNil()")
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)")
 		defer {
-			self.logger.trace("exit: dc_unkeyed.decodeNil()")
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)")
 		}
 		#endif
 		switch state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = yyjson_is_null(root)
-			increment()
-			return decodedValue
+				let decodedValue = yyjson_is_null(root)
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -100,13 +99,13 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeBool()
-			increment()
-			return decodedValue
+				let decodedValue = try root.decodeBool()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -118,13 +117,13 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeString()
-			self.increment()
-			return decodedValue
+				let decodedValue = try root.decodeString()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -136,13 +135,13 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeDouble()
-			increment()
-			return decodedValue
+				let decodedValue = try root.decodeDouble()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -154,13 +153,13 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeFloat()
-			increment()
-			return decodedValue
+				let decodedValue = try root.decodeFloat()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -174,11 +173,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeInt()
-			increment()
-			return decodedValue
+				let decodedValue = try root.decodeInt()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -190,13 +189,13 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeInt8()
-			increment()
-			return decodedValue
+				let decodedValue = try root.decodeInt8()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -210,11 +209,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeInt16()
-			increment()
-			return decodedValue
+				let decodedValue = try root.decodeInt16()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -228,11 +227,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeInt32()
-			self.increment()
-			return decodedValue
+				let decodedValue = try root.decodeInt32()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -246,11 +245,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeInt64()
-			self.increment()
-			return decodedValue
+				let decodedValue = try root.decodeInt64()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -264,11 +263,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeUInt()
-			self.increment()
-			return decodedValue
+				let decodedValue = try root.decodeUInt()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -282,11 +281,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeUInt8()
-			self.increment()
-			return decodedValue
+				let decodedValue = try root.decodeUInt8()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -298,13 +297,13 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeUInt16()
-			self.increment()
-			return decodedValue
+				let decodedValue = try root.decodeUInt16()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -318,11 +317,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeUInt32()
-			self.increment()
-			return decodedValue
+				let decodedValue = try root.decodeUInt32()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -336,11 +335,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-			let decodedValue = try root.decodeUInt64()
-			self.increment()
-			return decodedValue
+				let decodedValue = try root.decodeUInt64()
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -354,16 +353,11 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		#endif
 		switch self.state {
 			case .end:
-			throw Decoding.Error.contentOverflow
+				throw Decoding.Error.contentOverflow
 			case .content(let root):
-
-			#if QUICKJSON_SHOULDLOG
-			let decodedValue = try T(from:decoder(root:root, logLevel:self.logLevel))
-			#else
-			let decodedValue = try T(from:decoder(root:root))
-			#endif
-			self.increment()
-			return decodedValue
+				let decodedValue = try T(from:decoder(root:root))
+				increment()
+				return decodedValue
 		}
 	}
 
@@ -375,7 +369,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -394,7 +388,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function)")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -408,7 +402,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 	/// returns the number of elements in the decoding container.
 	internal var count:Int? {
 		get {
-			return self.length
+			return length
 		}
 	}
 

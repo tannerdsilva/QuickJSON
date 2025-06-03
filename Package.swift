@@ -20,11 +20,17 @@ let package = Package(
 			dependencies:[
 				.product(name:"yyjson", package:"yyjson"),
 				.product(name:"Logging", package:"swift-log")
+			],
+			swiftSettings:[
+				.define("QUICKJSON_SHOULDLOG"),
 			]
 		),
 		.testTarget(
 			name:"QuickJSONTests",
-			dependencies:["QuickJSON"]
+			dependencies:["QuickJSON"],
+			swiftSettings:[
+				.define("QUICKJSON_SHOULDLOG"),
+			]
 		)
 	]
 )

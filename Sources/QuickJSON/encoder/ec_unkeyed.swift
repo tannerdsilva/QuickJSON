@@ -123,7 +123,7 @@ internal struct ec_unkeyed:Swift.UnkeyedEncodingContainer {
 	}
 
 	/// append a double value into the container
-	internal mutating func encode(_ value:borrowing Double) throws {
+	internal mutating func encode(_ value:Double) throws {
 		#if QUICKJSON_SHOULDLOG
 		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type(of:value)))")
 		defer {

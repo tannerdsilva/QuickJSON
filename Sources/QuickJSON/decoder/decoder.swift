@@ -12,53 +12,55 @@ internal struct decoder:Swift.Decoder {
 
 	#if QUICKJSON_SHOULDLOG
 	private let logger:Logger
-	private let logLevel:Logging.Logger.Level
+	#endif
+
 	/// initialize a new decoder from a root json object
-	internal init(root:UnsafeMutablePointer<yyjson_val>, logLevel:Logging.Logger.Level = .critical) {
+	internal init(root:UnsafeMutablePointer<yyjson_val>) {
+		#if QUICKJSON_SHOULDLOG
 		let iid = UInt16.random(in:UInt16.min...UInt16.max)
 		var buildLogger = Decoding.logger
 		buildLogger[metadataKey: "iid"] = "\(iid)"
-		buildLogger.logLevel = logLevel
+		buildLogger[metadataKey: "root"] = "\(root)"
 		self.logger = buildLogger
-		self.logLevel = logLevel
-		buildLogger.debug("enter: decoder.init(root:)")
+		buildLogger.debug("enter: \(String(describing:Self.self)) : \(#function)")
 		defer {
-			buildLogger.trace("exit: decoder.init(root:)")
+			buildLogger.trace("exit: \(String(describing:Self.self)) : \(#function)")
 		}
+		#endif
 		self.root = root
 	}
-	#else
-	/// initialize a new decoder from a root json object
-	internal init(root:UnsafeMutablePointer<yyjson_val>) {
-		self.root = root
-	}
-	#endif
 
 	/// retrieve the keyed container for this decoder
 	internal func container<Key>(keyedBy type:Key.Type) throws -> KeyedDecodingContainer<Key> where Key:CodingKey {
 		#if QUICKJSON_SHOULDLOG
-		return try KeyedDecodingContainer(dc_keyed<Key>(root:root, logLevel:self.logLevel))
-		#else
-		return try KeyedDecodingContainer(dc_keyed<Key>(root:root))
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
 		#endif
+		return try KeyedDecodingContainer(dc_keyed<Key>(root:root))
 	}
 
 	/// retrieve the unkeyed container for this decoder
 	internal func unkeyedContainer() throws -> UnkeyedDecodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		return try dc_unkeyed(root:root, logLevel:self.logLevel)
-		#else
-		return try dc_unkeyed(root:root)
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)")
+		}
 		#endif
+		return try dc_unkeyed(root:root)
 	}
 
 	/// retrieve the single value container for this decoder
 	internal func singleValueContainer() throws -> SingleValueDecodingContainer {
 		#if QUICKJSON_SHOULDLOG
-		return dc_single(root:root, logLevel:self.logLevel)
-		#else
-		return dc_single(root:root)
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)")
+		}
 		#endif
+		return dc_single(root:root)
 	}
 
 	// required by swift. unused.

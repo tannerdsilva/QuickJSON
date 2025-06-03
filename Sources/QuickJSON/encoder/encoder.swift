@@ -171,7 +171,7 @@ internal struct encoder_from_keyed_container:Swift.Encoder {
 		buildLogger[metadataKey: "iid"] = "\(iid)"
 		buildLogger[metadataKey:"doc"] = "\(doc.hashValue)"
 		buildLogger[metadataKey:"obj"] = "\(obj.hashValue)"
-		buildLogger[metadataKey:"assignKey"] = "\(assignKey.stringValue)"
+		buildLogger[metadataKey:"assignKey"] = "\(assignKey.hashValue)"
 		self.logger = buildLogger
 		buildLogger.debug("enter: \(String(describing:Self.self)) : \(#function)")
 		defer {

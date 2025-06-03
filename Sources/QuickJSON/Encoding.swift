@@ -8,10 +8,7 @@ import Logging
 /// encode an object into a json based byte encoding.
 /// - parameter object: the object to encode.
 /// - parameter flags: the option flags to use for this encoding. default flag values are used if none are specified.
-public func encode<T:Encodable>(
-	_ object:T, 
-	flags:Encoding.Flags = Encoding.Flags()
-) throws -> [UInt8] {
+public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flags()) throws -> [UInt8] {
 	let newDoc = yyjson_mut_doc_new(nil)
 	guard newDoc != nil else {
 		throw Encoding.Error.memoryAllocationFailure
@@ -28,7 +25,7 @@ public func encode<T:Encodable>(
 /// namespace related to encoding.
 public struct Encoding {
 	/// errors that may occur during encoding
-	public enum Error:Swift.Error {
+	public enum Error:Swift.Error, CustomDebugStringConvertible {
 		/// the value could not be assigned
 		case assignmentError
 		/// memory allocation failed
@@ -38,11 +35,11 @@ public struct Encoding {
 	#if QUICKJSON_SHOULDLOG
 	/// the default logger for any encoding operation. this may be replaced with a custom logger before operating quickjson.
 	/// - note: this logger is only used if `QUICKJSON_SHOULDLOG` is defined.
-	public static var logger = makeDefaultLogger(label:"com.tannersilva.quickjson.encoding", logLevel:.debug)
+	public static let logger = makeDefaultLogger(label:"com.tannersilva.quickjson.encoding", logLevel:.trace)
 	#endif
 
 	/// option flags for the encoder
-	public struct Flags:OptionSet, Sendable{
+	public struct Flags:OptionSet, Sendable {
 		/// the raw value of the option flags
 		public let rawValue:UInt32
 		/// initialize a flag option set with a given raw value
@@ -59,4 +56,16 @@ public struct Encoding {
 
 	// nothing to see here
 	private init() {}
+}
+
+extension Encoding.Error {
+	/// a description of the error
+	public var debugDescription:String {
+		switch self {
+			case .assignmentError:
+				return "QuickJSON.Encoding.Error.assignmentError"
+			case .memoryAllocationFailure:
+				return "QuickJSON.Encoding.Error.memoryAllocationFailure"
+		}
+	}
 }
