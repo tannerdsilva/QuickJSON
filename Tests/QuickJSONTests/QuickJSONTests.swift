@@ -26,8 +26,8 @@ struct QuickJSONTests {
 				var buildMap = [String:PriceVolume]()
 				for curPair in self.data.ticker {
 					if let hasLast = curPair.last, let hasVolValue = curPair.volValue {
-						if let price = Double(hasLast), let volume = Double(hasVolValue) {
-							let pv = PriceVolume(p:price, v:volume)
+						if let price = Double(hasLast) {
+							let pv = PriceVolume(p:price, v:0)
 							buildMap[curPair.symbol] = pv
 						} else {
 							print("Failed to parse price or volume for \(curPair.symbol) with last:\(String(describing:curPair.last)) and volValue:\(String(describing:curPair.volValue))")
