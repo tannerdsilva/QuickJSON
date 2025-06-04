@@ -8,7 +8,7 @@ import Foundation
 struct QuickJSONTests {
 	@Test("kuCoinTests")
 	func kuCoinTests() throws {
-		let urlpath = URL(filePath:"/Users/tannersilva/Desktop/kucoin.json")!
+		let urlpath = URL(filePath:"/local/path/to/exchange_service_prices.json")!
 		let data = try! Data(contentsOf:urlpath)
 		struct ResponseBody:Decodable {
 			struct DataContainer:Decodable {
@@ -34,9 +34,6 @@ struct QuickJSONTests {
 		}
 		let response = try QuickJSON.decode(ResponseBody.self, bytes:data, size:data.count, flags:QuickJSON.Decoding.Flags())
 		fatalError("\(response.data.ticker.count)")
-		let map = response.toMap()
-		fatalError("\(map.count)")
-		#expect(map.count > 0, "map should have at least one entry")
 	}
 }
 

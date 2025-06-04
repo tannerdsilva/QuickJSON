@@ -97,8 +97,24 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		do {
 			return try getKeyRoot!.decodeString()
 		} catch let error {
+			// in this case, var root = any json object in the ticker array
+			var yyiter = yyjson_obj_iter()
+			let initIter = yyjson_obj_iter_init(root, &yyiter)
+			guard initIter == true else {
+				fatalError("failed to initialize iterator.")
+			}
+			while yyjson_obj_iter_has_next(&yyiter) == true {
+				let keyPtr = yyjson_obj_iter_next(&yyiter)!
+				let keyString = String(cString: yyjson_get_str(keyPtr)! )
+				let getValue = yyjson_obj_get(root, keyString)!
+				let typeNum = yyjson_get_type(getValue)
+				let vType = ValueType(typeNum)
+				#if QUICKJSON_SHOULDLOG
+				logger.debug("found key: '\(keyString)' of type \(typeNum) - \(vType)")
+				#endif
+			}
 			#if QUICKJSON_SHOULDLOG
-			logger.error("failed to decode string for key \(key.stringValue): \(error)")
+			// logger.critical("failed to decode string for key \(key.stringValue) in \(String(describing:Self.self)). available keys: \(buildKeys.keys.joined(separator:", "))")
 			#endif
 			fatalError("This should work and it isn't and its very frustrating.")
 		}
