@@ -22,7 +22,7 @@ struct QuickJSONTests {
 		
 			let code:String
 			let data:DataContainer
-			func toMap() -> [String:PriceVolume] {
+			func filterNullVolumeAndLast() -> [String:PriceVolume] {
 				var buildMap = [String:PriceVolume]()
 				for curPair in self.data.ticker {
 					if let hasLast = curPair.last, let hasVolValue = curPair.volValue {
@@ -38,7 +38,8 @@ struct QuickJSONTests {
 			}
 		}
 		let response = try QuickJSON.decode(ResponseBody.self, bytes:data, size:data.count, flags:QuickJSON.Decoding.Flags())
-		#expect(response.toMap().count > 0, "Response map should have more than 0 items, got \(response.toMap().count)")
+		print("there are \(response.data.ticker.count) items in the response")
+		#expect(response.filterNullVolumeAndLast().count > 0, "Response map should have more than 0 items")
 	}
 }
 
