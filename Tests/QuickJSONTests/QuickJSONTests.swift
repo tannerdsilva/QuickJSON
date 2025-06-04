@@ -8,14 +8,14 @@ import Foundation
 struct QuickJSONTests {
 	@Test("kuCoinTests")
 	func kuCoinTests() throws {
-		let urlpath = URL(filePath:"/local/path/to/exchange_service_prices.json")!
+		let urlpath = URL(filePath:"/Users/tannerdsilva/Desktop/exchange_service_prices.json")!
 		let data = try! Data(contentsOf:urlpath)
 		struct ResponseBody:Decodable {
 			struct DataContainer:Decodable {
 				struct CurrencyItem:Decodable {
 					let symbol:String
-					let last:String
-					let volValue:String
+					let last:String?
+					let volValue:String?
 				}
 				let ticker:[CurrencyItem]
 			}
@@ -25,15 +25,20 @@ struct QuickJSONTests {
 			func toMap() -> [String:PriceVolume] {
 				var buildMap = [String:PriceVolume]()
 				for curPair in self.data.ticker {
-					if let vol24h = Double(curPair.volValue), let lastPrice = Double(curPair.last) {
-						buildMap[curPair.symbol] = PriceVolume(p:lastPrice, v:vol24h)
+					if let hasLast = curPair.last, let hasVolValue = curPair.volValue {
+						if let price = Double(hasLast), let volume = Double(hasVolValue) {
+							let pv = PriceVolume(p:price, v:volume)
+							buildMap[curPair.symbol] = pv
+						} else {
+							print("Failed to parse price or volume for \(curPair.symbol) with last:\(String(describing:curPair.last)) and volValue:\(String(describing:curPair.volValue))")
+						}
 					}
 				}
 				return buildMap
 			}
 		}
 		let response = try QuickJSON.decode(ResponseBody.self, bytes:data, size:data.count, flags:QuickJSON.Decoding.Flags())
-		fatalError("\(response.data.ticker.count)")
+		#expect(response.toMap().count > 0, "Response map should have more than 0 items, got \(response.toMap().count)")
 	}
 }
 
