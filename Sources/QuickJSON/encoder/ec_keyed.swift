@@ -47,6 +47,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_null(doc)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode nil for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -60,6 +63,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_bool(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode boolean for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -73,6 +79,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_strncpy(doc, value, value.utf8.count)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode string for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -86,6 +95,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_real(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode double for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -100,6 +112,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		#endif
 
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_real(doc, Double(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode float for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -113,6 +128,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode int for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -126,6 +144,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode int8 for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -139,6 +160,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode int16 for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -152,6 +176,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode int32 for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -165,6 +192,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode int64 for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -178,6 +208,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode uint for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -191,6 +224,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode uint8 for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -204,6 +240,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode uint16 for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -217,6 +256,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode uint32 for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -230,6 +272,9 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		#endif
 		guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to encode uint64 for key: \(key.stringValue)")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -246,6 +291,257 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		try value.encode(to:encoder_from_keyed_container(doc:doc, obj:root, assignKey:yyjson_mut_strncpy(doc, ik.stringValue, ik.stringValue.utf8.count)!, codingPath:codingPath + [ik]))
 	}
 
+	internal mutating func encodeIfPresent(_ value:Bool?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_bool(doc, value!)) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode boolean for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:String?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_strncpy(doc, value, value!.utf8.count)!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode string for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:Double?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_real(doc, value!)!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode double for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:Float?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_real(doc, Double(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode float for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:Int?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode int for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:Int8?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode int8 for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:Int16?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode int16 for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:Int32?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode int32 for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:Int64?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_int(doc, Int64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode int64 for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:UInt?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode uint for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:UInt8?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode uint8 for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:UInt16?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode uint16 for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:UInt32?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode uint32 for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent(_ value:UInt64?, forKey key:Self.Key) throws {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function)", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			guard yyjson_mut_obj_put(root, yyjson_mut_strncpy(doc, key.stringValue, key.stringValue.utf8.count)!, yyjson_mut_uint(doc, UInt64(value!))!) == true else {
+				#if QUICKJSON_SHOULDLOG
+				logger.error("failed to encode uint64 for key: \(key.stringValue)")
+				#endif
+				throw Encoding.Error.assignmentError
+			}
+		}
+	}
+
+	internal mutating func encodeIfPresent<T>(_ value:T?, forKey key:Self.Key) throws where T:Encodable {
+		let ik = key
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type(of:value)))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type(of:value)))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		if value != nil {
+			try value!.encode(to:encoder_from_keyed_container(doc:doc, obj:root, assignKey:yyjson_mut_strncpy(doc, ik.stringValue, ik.stringValue.utf8.count)!, codingPath:codingPath + [ik]))
+		}
+	}
+
 	/// returns a keyed container for the given key
 	internal borrowing func nestedContainer<NestedKey>(keyedBy keyType:NestedKey.Type, forKey key:K) -> KeyedEncodingContainer<NestedKey> where NestedKey :CodingKey {
 		#if QUICKJSON_SHOULDLOG
@@ -260,6 +556,7 @@ internal struct ec_keyed<K>:Swift.KeyedEncodingContainerProtocol where K:CodingK
 		}
 		return KeyedEncodingContainer(ec_keyed<NestedKey>(doc:doc, root:newObj))
 	}
+
 
 	/// returns an unkeyed container for the given key
 	internal borrowing func nestedUnkeyedContainer(forKey key:K) -> UnkeyedEncodingContainer {

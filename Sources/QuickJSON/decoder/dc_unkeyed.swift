@@ -177,7 +177,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -213,7 +213,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -231,7 +231,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -249,7 +249,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -267,7 +267,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -285,7 +285,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -321,7 +321,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -339,7 +339,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
@@ -357,10 +357,269 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
 		}
 		#endif
-		switch self.state {
+		switch state {
 			case .end:
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
+				let decodedValue = try T(from:decoder(root:root))
+				increment()
+				return decodedValue
+		}
+	}
+
+	internal mutating func decodeIfPresent(_ type:Bool.Type) throws -> Bool? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeBoolIfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:String.Type) throws -> String? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeStringIfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:Double.Type) throws -> Double? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeDoubleIfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:Float.Type) throws -> Float? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeFloatIfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:Int.Type) throws -> Int? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeIntIfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:Int8.Type) throws -> Int8? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeInt8IfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:Int16.Type) throws -> Int16? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeInt16IfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:Int32.Type) throws -> Int32? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeInt32IfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:Int64.Type) throws -> Int64? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeInt64IfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:UInt.Type) throws -> UInt? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeUIntIfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:UInt8.Type) throws -> UInt8? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeUInt8IfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:UInt16.Type) throws -> UInt16? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeUInt16IfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:UInt32.Type) throws -> UInt32? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeUInt32IfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent(_ type:UInt64.Type) throws -> UInt64? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				let decodedValue = try root.decodeUInt64IfPresent()
+				increment()
+				return decodedValue
+		}
+	}
+	
+	internal mutating func decodeIfPresent<T>(_ type:T.Type) throws -> T? where T:Decodable {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))")
+		}
+		#endif
+		switch state {
+			case .end:
+				return nil
+			case .content(let root):
+				guard yyjson_get_type(root) != YYJSON_TYPE_NULL else {
+					increment()
+					return nil
+				}
 				let decodedValue = try T(from:decoder(root:root))
 				increment()
 				return decodedValue
@@ -380,7 +639,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
 				defer {
-					self.increment()
+					increment()
 				}
 				return try KeyedDecodingContainer(dc_keyed<NestedKey>(root:root))
 		}
@@ -399,7 +658,7 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 				throw Decoding.Error.contentOverflow
 			case .content(let root):
 			defer {
-				self.increment()
+				increment()
 			}
 			return try dc_unkeyed(root:root)
 		}

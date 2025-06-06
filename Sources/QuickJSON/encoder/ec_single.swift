@@ -56,6 +56,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_bool(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append bool value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -69,6 +72,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_strncpy(doc, value, value.utf8.count)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append string value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -82,6 +88,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_real(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append double value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -95,6 +104,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_real(doc, Double(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append float value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -108,6 +120,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append int value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -121,6 +136,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append int8 value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -134,6 +152,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append int16 value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -147,6 +168,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append int32 value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -160,6 +184,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_int(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append int64 value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -173,6 +200,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append uint value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -186,6 +216,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append uint8 value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -199,6 +232,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append uint16 value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -212,6 +248,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append uint32 value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -225,6 +264,9 @@ internal struct ec_single_from_unkeyed_container:Swift.SingleValueEncodingContai
 		}
 		#endif
 		guard yyjson_mut_arr_append(arr, yyjson_mut_uint(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to append uint64 value to array")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -290,6 +332,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_null(doc)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign nil value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -304,6 +349,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_bool(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign bool value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -318,6 +366,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_strncpy(doc, value, value.utf8.count)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign string value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -332,6 +383,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_real(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign double value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -346,6 +400,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_real(doc, Double(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign float value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -360,6 +417,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign int value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -374,6 +434,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign int8 value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -388,6 +451,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign int16 value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -402,6 +468,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, Int64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign int32 value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -416,6 +485,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_int(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign int64 value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -430,6 +502,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign uint value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -443,6 +518,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		}
 		#endif
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign uint8 value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -457,6 +535,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign uint16 value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -471,6 +552,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, UInt64(value))!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign uint32 value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}
@@ -485,6 +569,9 @@ internal struct ec_single_from_keyed_container:Swift.SingleValueEncodingContaine
 		#endif
 		// assign the new value to the object
 		guard yyjson_mut_obj_put(obj, assignKey, yyjson_mut_uint(doc, value)!) == true else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("failed to assign uint64 value to object")
+			#endif
 			throw Encoding.Error.assignmentError
 		}
 	}

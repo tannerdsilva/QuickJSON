@@ -62,6 +62,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return getKeyRoot!.decodeNil()
@@ -77,6 +80,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeBool()
@@ -92,32 +98,12 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
-		do {
-			return try getKeyRoot!.decodeString()
-		} catch let error {
-			// in this case, var root = any json object in the ticker array
-			var yyiter = yyjson_obj_iter()
-			let initIter = yyjson_obj_iter_init(root, &yyiter)
-			guard initIter == true else {
-				fatalError("failed to initialize iterator.")
-			}
-			while yyjson_obj_iter_has_next(&yyiter) == true {
-				let keyPtr = yyjson_obj_iter_next(&yyiter)!
-				let keyString = String(cString: yyjson_get_str(keyPtr)! )
-				let getValue = yyjson_obj_get(root, keyString)!
-				let typeNum = yyjson_get_type(getValue)
-				let vType = ValueType(typeNum)
-				#if QUICKJSON_SHOULDLOG
-				logger.debug("found key: '\(keyString)' of type \(typeNum) - \(vType)")
-				#endif
-			}
-			#if QUICKJSON_SHOULDLOG
-			// logger.critical("failed to decode string for key \(key.stringValue) in \(String(describing:Self.self)). available keys: \(buildKeys.keys.joined(separator:", "))")
-			#endif
-			fatalError("This should work and it isn't and its very frustrating.")
-		}
+		return try getKeyRoot!.decodeString()
 	}
 
 	/// decode a double value for the given key.
@@ -130,6 +116,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeDouble()
@@ -146,6 +135,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeFloat()
@@ -161,6 +153,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeInt()
@@ -176,6 +171,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeInt8()
@@ -191,6 +189,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeInt16()
@@ -207,6 +208,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeInt32()
@@ -222,6 +226,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeInt64()
@@ -237,6 +244,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeUInt()
@@ -252,6 +262,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeUInt8()
@@ -267,6 +280,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeUInt16()
@@ -282,6 +298,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeUInt32()
@@ -297,6 +316,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return try getKeyRoot!.decodeUInt64()
@@ -312,7 +334,223 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
+		}
+		return try T(from:decoder(root:getKeyRoot!))
+	}
+
+	internal func decodeIfPresent(_ type:Bool.Type, forKey key:Self.Key) throws -> Bool? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeBoolIfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:String.Type, forKey key:Self.Key) throws -> String? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeStringIfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:Double.Type, forKey key:Self.Key) throws -> Double? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeDoubleIfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:Float.Type, forKey key:Self.Key) throws -> Float? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeFloatIfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:Int.Type, forKey key:Self.Key) throws -> Int? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeIntIfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:Int8.Type, forKey key:Self.Key) throws -> Int8? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeInt8IfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:Int16.Type, forKey key:Self.Key) throws -> Int16? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeInt16IfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:Int32.Type, forKey key:Self.Key) throws -> Int32? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeInt32IfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:Int64.Type, forKey key:Self.Key) throws -> Int64? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeInt64IfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:UInt.Type, forKey key:Self.Key) throws -> UInt? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeUIntIfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:UInt8.Type, forKey key:Self.Key) throws -> UInt8? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeUInt8IfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:UInt16.Type, forKey key:Self.Key) throws -> UInt16? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeUInt16IfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:UInt32.Type, forKey key:Self.Key) throws -> UInt32? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeUInt32IfPresent()
+	}
+	
+	internal func decodeIfPresent(_ type:UInt64.Type, forKey key:Self.Key) throws -> UInt64? {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		return try getKeyRoot!.decodeUInt64IfPresent()
+	}
+	
+	internal func decodeIfPresent<T>(_ type:T.Type, forKey key:Self.Key) throws -> T? where T : Decodable {
+		#if QUICKJSON_SHOULDLOG
+		logger.debug("enter: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		defer {
+			logger.trace("exit: \(String(describing:Self.self)) : \(#function) : \(String(describing:type))", metadata:["forKey_arg":"\(key.stringValue)"])
+		}
+		#endif
+		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
+		guard getKeyRoot != nil else {
+			return nil
+		}
+		guard yyjson_get_type(getKeyRoot) != YYJSON_TYPE_NULL else {
+			return nil
 		}
 		return try T(from:decoder(root:getKeyRoot!))
 	}
@@ -327,6 +565,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 		return KeyedDecodingContainer(try dc_keyed<NestedKey>(root:getKeyRoot!))
@@ -342,6 +583,9 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 		#endif
 		let getKeyRoot = yyjson_obj_get(root, key.stringValue)
 		guard getKeyRoot != nil else {
+			#if QUICKJSON_SHOULDLOG
+			logger.error("key not found: \(key.stringValue)")
+			#endif
 			throw Decoding.Error.notFound(key.stringValue)
 		}
 
@@ -360,10 +604,7 @@ internal struct dc_keyed<K>:Swift.KeyedDecodingContainerProtocol where K:CodingK
 			var yyiter = yyjson_obj_iter()
 			let initIter = yyjson_obj_iter_init(root, &yyiter)
 			guard initIter == true else {
-				#if QUICKJSON_SHOULDLOG
-				logger.error("failed to initialize iterator")
-				#endif
-				return []
+				fatalError("failed to initialize object iterator")
 			}
 			var buildKeys = [K]()
 			while yyjson_obj_iter_has_next(&yyiter) == true {
