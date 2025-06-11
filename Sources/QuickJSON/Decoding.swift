@@ -5,6 +5,40 @@ import yyjson
 import Logging
 #endif
 
+public func decode(bytes:UnsafeMutableRawBufferPointer, flags:Decoding.Flags, memory memconfig:borrowing Memory.Configuration = .automatic) throws -> UnsafeMutablePointer<yyjson_doc> {
+	var errorinfo = yyjson_read_err()
+	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
+	switch memconfig {
+		case .automatic:
+		yyjsonDoc = yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, nil, &errorinfo)
+		case .preallocated(let region):
+		yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
+			return yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, &alc, &errorinfo)
+		}
+	}
+	guard yyjsonDoc != nil && errorinfo.code == 0 else {
+		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
+	}
+	return yyjsonDoc!
+}
+
+public func decode(bytes:UnsafeMutableBufferPointer<UInt8>, flags:Decoding.Flags, memory memconfig:borrowing Memory.Configuration = .automatic) throws -> UnsafeMutablePointer<yyjson_doc> {
+	var errorinfo = yyjson_read_err()
+	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
+	switch memconfig {
+		case .automatic:
+		yyjsonDoc = yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, nil, &errorinfo)
+		case .preallocated(let region):
+		yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
+			return yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, &alc, &errorinfo)
+		}
+	}
+	guard yyjsonDoc != nil && errorinfo.code == 0 else {
+		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
+	}
+	return yyjsonDoc!
+}
+
 /// decode an unknown type from a json document using a specified handler function.
 /// - parameters:
 /// 	- data: a pointer to the json document to decode
@@ -209,11 +243,11 @@ extension Decoding.Error {
 			case .contentOverflow:
 				return "QuickJSON.Decoding.Error.contentOverflow"
 			case .valueTypeMismatch(let info):
-				return "QuickJSON.Decoding.Error.valueTypeMismatch(expected:\(info.expected), found:\(info.found))"
+				return "QuickJSON.Decoding.Error.valueTypeMismatch(expected: \(info.expected), found: \(info.found))"
 			case .notFound(let key):
 				return "QuickJSON.Decoding.Error.notFound(key:\(key))"
 			case .documentParseError(let info):
-				return "QuickJSON.Decoding.Error.documentParseError(error:\(info.error), offset:\(info.offset), code:\(info.code))"
+				return "QuickJSON.Decoding.Error.documentParseError(error: \(info.error), offset: \(info.offset), code: \(info.code))"
 			case .documentRootError:
 				return "QuickJSON.Decoding.Error.documentRootError"
 		}

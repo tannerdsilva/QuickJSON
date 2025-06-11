@@ -52,8 +52,8 @@ public struct Memory {
 		}
 
 		/// exposes the underlying yyjson_alc for use in other functions.
-		internal func expose<R>(_ exposureBlock:(inout yyjson_alc) throws -> R) rethrows -> R {
-			return try exposureBlock(&self.alc)
+		internal borrowing func expose<R, E>(_ exposureBlock:(inout yyjson_alc) throws(E) -> R) throws(E) -> R where E:Swift.Error {
+			return try exposureBlock(&alc)
 		}
 
 		/// frees the enclosed buffer when the memory pool is deinitialized.
