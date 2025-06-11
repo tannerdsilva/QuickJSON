@@ -5,156 +5,24 @@ import yyjson
 import Logging
 #endif
 
-public func decode(bytes:UnsafeMutableRawBufferPointer, flags:Decoding.Flags, memory memconfig:borrowing Memory.Configuration = .automatic) throws -> UnsafeMutablePointer<yyjson_doc> {
-	var errorinfo = yyjson_read_err()
-	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
-	switch memconfig {
-		case .automatic:
-		yyjsonDoc = yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, nil, &errorinfo)
-		case .preallocated(let region):
-		yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
-			return yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, &alc, &errorinfo)
-		}
-	}
-	guard yyjsonDoc != nil && errorinfo.code == 0 else {
-		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
-	}
-	return yyjsonDoc!
-}
-
-public func decode(bytes:UnsafeMutableBufferPointer<UInt8>, flags:Decoding.Flags, memory memconfig:borrowing Memory.Configuration = .automatic) throws -> UnsafeMutablePointer<yyjson_doc> {
-	var errorinfo = yyjson_read_err()
-	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
-	switch memconfig {
-		case .automatic:
-		yyjsonDoc = yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, nil, &errorinfo)
-		case .preallocated(let region):
-		yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
-			return yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, &alc, &errorinfo)
-		}
-	}
-	guard yyjsonDoc != nil && errorinfo.code == 0 else {
-		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
-	}
-	return yyjsonDoc!
-}
-
-/// decode an unknown type from a json document using a specified handler function.
-/// - parameters:
-/// 	- data: a pointer to the json document to decode
-/// 	- size: the size of the json document
-/// 	- flags: the decoding flags to use
-/// 	- memconfig: the memory configuration to use
-/// 	- handlerFunc: the function to handle the parsing actions
-/// - returns: transparently returns the return value of the handler function
-public func decode<R, C>(
-	bytes:C,
-	flags:Decoding.Flags = Decoding.Flags(),
-	memory memconfig:Memory.Configuration = .automatic,
-	_ handlerFunc:(Swift.Decoder) throws -> R
-) throws -> R where C:Collection, C.Element == UInt8 {
-	let getVal = try bytes.withContiguousStorageIfAvailable({
-		return try decode(data:$0.baseAddress!, size:$0.count, flags:flags, memory:memconfig, handlerFunc)
-	})
-	if getVal != nil {
-		return getVal!
-	} else {
-		let buffer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity:bytes.count)
-		defer { buffer.deallocate() }
-		_ = buffer.initialize(from: bytes)
-		return try decode(data:buffer.baseAddress!, size:buffer.count, flags:flags, memory:memconfig, handlerFunc)
-	}
-}
-
-/// decode an unknown type from a json document using a specified handler function.
-/// - parameters:
-/// 	- data: a pointer to the json document to decode
-/// 	- size: the size of the json document
-/// 	- flags: the decoding flags to use
-/// 	- memconfig: the memory configuration to use
-/// 	- handlerFunc: the function to handle the parsing actions
-/// - returns: transparently returns the return value of the handler function
-public func decode<R>(
-	data:UnsafeRawPointer, size:size_t,
-	flags:Decoding.Flags = Decoding.Flags(),
-	memory memconfig:Memory.Configuration = .automatic,
-	_ handlerFunc:(Swift.Decoder) throws -> R
-) throws -> R {
-	var errorinfo = yyjson_read_err()
-	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
-	switch memconfig {
-		case .automatic:
-		yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, nil, &errorinfo)
-		case .preallocated(let region):
-		yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
-			return yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, &alc, &errorinfo)
-		}
-	}
-	guard yyjsonDoc != nil && errorinfo.code == 0 else {
-		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
-	}
-	defer {
-		yyjson_doc_free(yyjsonDoc)
-	}
-	let getRoot = yyjson_doc_get_root(yyjsonDoc)
-	guard getRoot != nil else {
-		throw Decoding.Error.documentRootError
-	}
-	return try handlerFunc(decoder(root:getRoot!))
-}
-
-/// decode a value from a json document
+/// decode an explicit type from a json document
 /// - parameters:
 ///		- type: the type of the value to decode
 ///		- bytes: the json document to decode
-///		- size: the size of the json document buffer
 ///		- flags: the decoding flags to use
 ///		- memconfig: the memory configuration to use
-///	- returns: the decoded value
-public func decode<T:Decodable, C>(
-	_ type:T.Type, 
-	bytes:C, 
-	size:size_t, 
-	flags:Decoding.Flags = Decoding.Flags(), 
-	memory memconfig:Memory.Configuration = .automatic
-) throws -> T where C:Collection, C.Element == UInt8 {
-	let getVal = try bytes.withContiguousStorageIfAvailable({
-		return try decode(type, from:$0.baseAddress!, size:$0.count, flags:flags, memory:memconfig)
-	})
-	if getVal != nil {
-		return getVal!
-	} else {
-		let buffer = UnsafeMutableBufferPointer<UInt8>.allocate(capacity:bytes.count)
-		defer { buffer.deallocate() }
-		_ = buffer.initialize(from: bytes)
-		return try decode(type, from:buffer.baseAddress!, size:buffer.count, flags:flags, memory:memconfig)
-	}
-}
-
-/// decode a value from a json document
-///	- parameters:
-///		- type: the type of the value to decode
-///		- data: the pointer to the json document to decode
-///		- size: the size of the json document buffer
-///		- flags: the decoding flags to use
-///		- memconfig: the memory configuration to use
-///	- returns: the decoded value
-public func decode<T:Decodable>(
-	_ type:T.Type, 
-	from data:UnsafeRawPointer, 
-	size:size_t, 
-	flags:Decoding.Flags = Decoding.Flags(), 
-	memory memconfig:Memory.Configuration = .automatic
-) throws -> T {
+/// - returns: the decoded value
+/// - throws: throws an error if the document could not be parsed, or if the root of the document could not be found.
+public func decode<T:Decodable>(_ type:T.Type, bytes:UnsafeMutableRawBufferPointer, flags:Decoding.Flags = Decoding.Flags(), memory memconfig:Memory.Configuration = .automatic) throws -> T {
 	var errorinfo = yyjson_read_err()
 	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
 	switch memconfig {
 		case .automatic:
-		yyjsonDoc = yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, nil, &errorinfo)
+			yyjsonDoc = yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, nil, &errorinfo)
 		case .preallocated(let region):
-		yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
-			return yyjson_read_opts(UnsafeMutableRawPointer(mutating:data), size, flags.rawValue, &alc, &errorinfo)
-		}
+			yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
+				return yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, &alc, &errorinfo)
+			}
 	}
 	guard yyjsonDoc != nil && errorinfo.code == 0 else {
 		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
@@ -167,6 +35,37 @@ public func decode<T:Decodable>(
 		throw Decoding.Error.documentRootError
 	}
 	return try T(from:decoder(root:getRoot!))
+}
+
+/// decode a value from a json document using a handler function. the handler function allows for more flexible decoding, such as decoding into a custom type or performing additional processing on the decoded value without tieing it to a specific type.
+/// - parameters:
+///		- bytes: the json document to decode
+///		- flags: the decoding flags to use
+///		- memconfig: the memory configuration to use
+///		- handlerFunc: the function to call with the decoded value. this function should take a `Swift.Decoder` and return a value of type `R`.
+/// - returns: the value returned by the handler function
+public func decode<R>(bytes:UnsafeMutableRawBufferPointer, flags:Decoding.Flags = Decoding.Flags(), memory memconfig:Memory.Configuration = .automatic, _ handlerFunc:(Swift.Decoder) throws -> R) throws -> R {
+	var errorinfo = yyjson_read_err()
+	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
+	switch memconfig {
+		case .automatic:
+			yyjsonDoc = yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, nil, &errorinfo)
+		case .preallocated(let region):
+			yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
+				return yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, &alc, &errorinfo)
+			}
+	}
+	guard yyjsonDoc != nil && errorinfo.code == 0 else {
+		throw Decoding.Error.documentParseError(Decoding.Error.ParseInfo(readInfo:errorinfo))
+	}
+	defer {
+		yyjson_doc_free(yyjsonDoc)
+	}
+	let getRoot = yyjson_doc_get_root(yyjsonDoc)
+	guard getRoot != nil else {
+		throw Decoding.Error.documentRootError
+	}
+	return try handlerFunc(decoder(root:getRoot!))
 }
 
 /// namespace related to decoding.
@@ -234,6 +133,32 @@ public struct Decoding {
 
 	// nothing to see here
 	private init() {}
+}
+
+extension Decoding.Flags:CustomDebugStringConvertible {
+	/// a description of the flags
+	public var debugDescription:String {
+		var components:[String] = []
+		if contains(.inSitu) {
+			components.append("inSitu")
+		}
+		if contains(.stopWhenDone) {
+			components.append("stopWhenDone")
+		}
+		if contains(.allowTrailingCommas) {
+			components.append("allowTrailingCommas")
+		}
+		if contains(.allowComments) {
+			components.append("allowComments")
+		}
+		if contains(.allowInfAndNaN) {
+			components.append("allowInfAndNaN")
+		}
+		if contains(.allowInvalidUnicode) {
+			components.append("allowInvalidUnicode")
+		}
+		return "QuickJSON.Decoding.Flags(" + components.joined(separator:", ") + ")"
+	}
 }
 
 extension Decoding.Error {

@@ -8,7 +8,7 @@ import Logging
 /// encode an object into a json based byte encoding.
 /// - parameter object: the object to encode.
 /// - parameter flags: the option flags to use for this encoding. default flag values are used if none are specified.
-public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flags()) throws -> [UInt8] {
+public func encode<T:Encodable>(_ object:consuming T, flags:Encoding.Flags = Encoding.Flags()) throws -> [UInt8] {
 	let newDoc = yyjson_mut_doc_new(nil)
 	guard newDoc != nil else {
 		throw Encoding.Error.memoryAllocationFailure
@@ -16,9 +16,7 @@ public func encode<T:Encodable>(_ object:T, flags:Encoding.Flags = Encoding.Flag
 	defer {
 		yyjson_mut_doc_free(newDoc)
 	}
-
 	try object.encode(to:encoder_from_root(doc:newDoc!))
-
 	return try newDoc!.exportDocumentBytes(flags:flags)
 }
 
@@ -35,7 +33,7 @@ public struct Encoding {
 	#if QUICKJSON_SHOULDLOG
 	/// the default logger for any encoding operation. this may be replaced with a custom logger before operating quickjson.
 	/// - note: this logger is only used if `QUICKJSON_SHOULDLOG` is defined.
-	public static let logger = makeDefaultLogger(label:"com.tannersilva.quickjson.encoding", logLevel:.trace)
+	public static let logger = makeDefaultLogger(label:"com.tannersilva.quickjson.encoding", logLevel:.debug)
 	#endif
 
 	/// option flags for the encoder
