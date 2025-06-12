@@ -54,13 +54,13 @@ internal struct dc_unkeyed:Swift.UnkeyedDecodingContainer {
 		length = yyjson_arr_size(root)
 		#if QUICKJSON_SHOULDLOG
 		buildLogger[metadataKey: "unkeyed_item_count"] = "\(length)"
+		self.logger = buildLogger
 		#endif
 		if length == 0 {
 			state = .end
 		} else {
 			state = .content(unsafe_yyjson_get_first(root))
 		}
-		self.logger = buildLogger
 	}
 
 	// called every time a value is decoded. 
