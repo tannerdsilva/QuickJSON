@@ -13,15 +13,15 @@ import Logging
 ///		- memconfig: the memory configuration to use
 /// - returns: the decoded value
 /// - throws: throws an error if the document could not be parsed, or if the root of the document could not be found.
-public func decode<T:Decodable>(_ type:T.Type, bytes:UnsafeMutableRawBufferPointer, flags:Decoding.Flags = Decoding.Flags(), memory memconfig:Memory.Configuration = .automatic) throws -> T {
+public func decode<T:Decodable>(_ type:T.Type, buffer:UnsafeMutableRawBufferPointer, flags:Decoding.Flags = Decoding.Flags(), memory memconfig:Memory.Configuration = .automatic) throws -> T {
 	var errorinfo = yyjson_read_err()
 	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
 	switch memconfig {
 		case .automatic:
-			yyjsonDoc = yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, nil, &errorinfo)
+			yyjsonDoc = yyjson_read_opts(buffer.baseAddress, buffer.count, flags.rawValue, nil, &errorinfo)
 		case .preallocated(let region):
 			yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
-				return yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, &alc, &errorinfo)
+				return yyjson_read_opts(buffer.baseAddress, buffer.count, flags.rawValue, &alc, &errorinfo)
 			}
 	}
 	guard yyjsonDoc != nil && errorinfo.code == 0 else {
@@ -44,15 +44,15 @@ public func decode<T:Decodable>(_ type:T.Type, bytes:UnsafeMutableRawBufferPoint
 ///		- memconfig: the memory configuration to use
 ///		- handlerFunc: the function to call with the decoded value. this function should take a `Swift.Decoder` and return a value of type `R`.
 /// - returns: the value returned by the handler function
-public func decode<R>(bytes:UnsafeMutableRawBufferPointer, flags:Decoding.Flags = Decoding.Flags(), memory memconfig:Memory.Configuration = .automatic, _ handlerFunc:(Swift.Decoder) throws -> R) throws -> R {
+public func decode<R>(buffer:UnsafeMutableRawBufferPointer, flags:Decoding.Flags = Decoding.Flags(), memory memconfig:Memory.Configuration = .automatic, _ handlerFunc:(Swift.Decoder) throws -> R) throws -> R {
 	var errorinfo = yyjson_read_err()
 	let yyjsonDoc:UnsafeMutablePointer<yyjson_doc>?
 	switch memconfig {
 		case .automatic:
-			yyjsonDoc = yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, nil, &errorinfo)
+			yyjsonDoc = yyjson_read_opts(buffer.baseAddress, buffer.count, flags.rawValue, nil, &errorinfo)
 		case .preallocated(let region):
 			yyjsonDoc = region.expose { (alc) -> UnsafeMutablePointer<yyjson_doc>? in
-				return yyjson_read_opts(bytes.baseAddress, bytes.count, flags.rawValue, &alc, &errorinfo)
+				return yyjson_read_opts(buffer.baseAddress, buffer.count, flags.rawValue, &alc, &errorinfo)
 			}
 	}
 	guard yyjsonDoc != nil && errorinfo.code == 0 else {
