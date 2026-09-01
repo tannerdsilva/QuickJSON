@@ -15,7 +15,7 @@ let package = Package(
 		.library(name: "QuickJSON", targets: ["QuickJSON"]),
 	],
 	dependencies: [
-		.package(url: "https://github.com/ibireme/yyjson.git", "0.8.0"..<"0.9.0"),
+		.package(url: "https://github.com/ibireme/yyjson.git", "0.11.0"..<"0.13.0"),
 		.package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
 	],
 	targets: [
@@ -31,6 +31,6 @@ let package = Package(
 			dependencies: ["QuickJSON"]
 		),
 	],
-	// strict concurrency adoption is deferred; the package currently targets swift language mode 5.
-	swiftLanguageModes: [.v5]
+	// strict concurrency is enforced; all public types are Sendable.
+	swiftLanguageModes: [.v6]
 )

@@ -14,11 +14,12 @@ public struct Memory {
 	}
 
 	/// a "region" of memory that can be used to encode or decode JSON data.
-	public final class Region {
+	/// - note: a region is not safe to share across threads; its pool allocator is single-threaded.
+	public final class Region: @unchecked Sendable {
 		/// thrown when `malloc` fails to allocate memory for the memory region.
-		public struct MemoryAllocationError: Swift.Error  {}
-		/// thrown when ``yyjson_alc_pool_init`` fails to initialize with a given buffer.
-		public struct InitializationError: Swift.Error {}
+		public struct MemoryAllocationError: Swift.Error, Sendable  {}
+		/// thrown when `yyjson_alc_pool_init` fails to initialize with a given buffer.
+		public struct InitializationError: Swift.Error, Sendable {}
 
 		internal var alc: yyjson_alc
 		private let bufferPointer: UnsafeMutableRawPointer

@@ -6,7 +6,7 @@ import yyjson
 /// - parameters:
 ///   - object: the object to encode.
 ///   - flags: the option flags to use for this encoding. default flag values are used if none are specified.
-///   - memory: the memory configuration to use for this encoding.
+///   - memconfig: the memory configuration to use for this encoding.
 ///   - logLevel: the log level to use for this encoding.
 /// - returns: the encoded json document as a byte array.
 /// - throws: `Encoding.Error` if the encoding fails.
@@ -42,7 +42,7 @@ public func encode<T: Encodable>(
 /// namespace related to encoding.
 public struct Encoding {
 	/// errors that may occur during encoding
-	public enum Error: Swift.Error {
+	public enum Error: Swift.Error, Sendable {
 		/// the value could not be assigned
 		case assignmentError
 		/// memory allocation failed
@@ -50,10 +50,10 @@ public struct Encoding {
 	}
 
 	/// the default logger for any encoding operation. this may be replaced with a custom logger before calling `encode(_:)`.
-	public static var logger = makeDefaultLogger(label: "com.tannersilva.quickjson.encoding", logLevel: .debug)
+	public nonisolated(unsafe) static var logger = makeDefaultLogger(label: "com.tannersilva.quickjson.encoding", logLevel: .debug)
 
 	/// option flags for the encoder
-	public struct Flags: OptionSet {
+	public struct Flags: OptionSet, Sendable {
 		/// the raw value of the option flags
 		public let rawValue: UInt32
 		/// initialize a flag option set with a given raw value

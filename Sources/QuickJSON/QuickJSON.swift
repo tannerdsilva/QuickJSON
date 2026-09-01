@@ -1,13 +1,8 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
-/// indicates if this build of quickjson includes runtime-configurable logging.
-/// - note: logging is always compiled in; configure it at runtime via the `logLevel` parameters and `Encoding.logger` / `Decoding.logger`.
-@available(*, deprecated, message: "logging is always available; configure it at runtime via logLevel")
-public let loggingEnabled = true
-
 /// represents various JSON types. this is primarily used to describe type mismatches.
-public enum ValueType: UInt8 {
+public enum ValueType: UInt8, Sendable {
 	/// represents no value
 	case none = 0
 	/// represents a raw value
