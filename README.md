@@ -28,13 +28,15 @@ QuickJSON is developed using [Semantic Versioning 2.0.0](https://semver.org/), w
 
 ## Log Mode
 
-QuickJSON is built for performance first and foremost. As such, it does NOT include any logging facilities in its build as default. This even applies to debug builds.
+QuickJSON is built for performance first and foremost. Logging is compiled in and is **off by default at runtime**: every `encode`/`decode` call silently no-ops its log statements unless a `logLevel` other than `.critical` is supplied.
 
-To enable logging facilities with QuickJSON, you may define the following `swiftSetting` in your Package Description:
+To enable log output for a single call, pass an explicit `logLevel`:
 
+```swift
+let encoded = try QuickJSON.encode(myObject, logLevel: .debug)
 ```
-.define("QUICKJSON_SHOULDLOG") // this enables logging
-```
+
+The default loggers (`Encoding.logger` and `Decoding.logger`) can be replaced with custom `Logger` instances, which are then used by every operation. Per-call log levels continue to apply on top of the configured logger.
 
 ## Compatibility
 
@@ -54,7 +56,7 @@ This package requires a `swift-tools-version` >= `5.5`.
 
 - `yyjson`: self-explanatory.
 
-- `swift-log`: a core part of the Swift ecosystem. a required build dependency, but only "included" in the final binary when running tests or `QUICKJSON_SHOULDLOG` is defined.
+- `swift-log`: a core part of the Swift ecosystem. a required build dependency. logging output is disabled by default at runtime, so the dependency imposes no overhead or output unless a `logLevel` is supplied.
 
 ## License
 

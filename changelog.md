@@ -1,4 +1,22 @@
-### v1.1.2
+# v2.0.0 (in development)
+
+- **Removed the `QUICKJSON_SHOULDLOG` build flag.** logging is now always compiled in and controlled at runtime via the `logLevel` parameter on every `encode`/`decode` call, which defaults to `.critical` (log output disabled). replaces the duplicated conditional-compilation code that doubled the size of the source tree and whose build was broken.
+- **Deprecated `QuickJSON.loggingEnabled`** (now always `true`; configure logging at runtime instead).
+- **Simplified the public decode API.**
+	- unified the `bytes:` and `from:` argument labels on the decode functions to a single `from:` label.
+	- removed the dead `size:` parameter from the collection-based `decode` overloads (the value was silently ignored).
+	- removed the unused `T: Decodable` generic parameter from the handler-based `decode` overloads.
+	- converted `size_t` parameters to `Int` on the pointer-based overloads and `Memory.Region`.
+- **Implemented `superEncoder`/`superDecoder`** on all containers, previously `fatalError("unimplemented")`. the keyed variants now use a reserved `"super"` key.
+- **New `Decoding.Error.numberOutOfRange`** case, thrown when a numeric value does not fit in the requested narrow integer type. previously the decoder would trap at runtime on overflow.
+- **Bugfix: `KeyedDecodingContainer.contains(_:)`** no longer reports `true` for absent keys.
+- **Bugfix: `nestedContainer(keyedBy:forKey:)`** on the encoder now writes the nested container under its key in the object, instead of appending it to the object as if it were an array.
+- **Bugfix: the preallocated encoding path** now creates the yyjson document with the memory region's allocator, so the region is actually used (previously the region was created and discarded).
+- Updated the package manifest to `swift-tools-version: 6.0` with explicit platform declarations (the package continues to target swift language mode 5).
+- Reorganized the source tree: one type per file, `Encoding/`-style names without the former `ec_`/`dc_` prefixes, and collapsed the three single-value encoding container variants into a single position-based implementation.
+- Rewrote the test suite using Swift Testing (7 suites, 48 tests), covering round trips, flags, error paths, container semantics, memory regions, handler decoding, and edge cases.
+
+## v1.1.2
 
 - Fixed memory leak.
 

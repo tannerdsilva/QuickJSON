@@ -1,24 +1,13 @@
 // (c) tanner silva 2023. all rights reserved.
 import yyjson
 
-#if QUICKJSON_SHOULDLOG
-import Logging
-/// the default logger for quickjson.
-internal func makeDefaultLogger(label:String, logLevel:Logger.Level) -> Logger {
-	var newLogger = Logger(label:label)
-	newLogger.logLevel = logLevel
-	newLogger.notice("quickjson was built with QUICKJSON_SHOULDLOG. this option enables the internal logging system in QuickJSON. TO ENSURE BEST PERFORMANCE FOR USERS, only enable this option during development.")
-	return newLogger
-}
-///	indicates if the current build of quickjson was compiled with logging enabled. this will indicate `true` if `QUICKJSON_SHOULDLOG` is defined.
+/// indicates if this build of quickjson includes runtime-configurable logging.
+/// - note: logging is always compiled in; configure it at runtime via the `logLevel` parameters and `Encoding.logger` / `Decoding.logger`.
+@available(*, deprecated, message: "logging is always available; configure it at runtime via logLevel")
 public let loggingEnabled = true
-#else
-///	indicates if the current build of quickjson was compiled with logging enabled. this will indicate `true` if `QUICKJSON_SHOULDLOG` is defined.
-public let loggingEnabled = false
-#endif
 
 /// represents various JSON types. this is primarily used to describe type mismatches.
-public enum ValueType:UInt8 {
+public enum ValueType: UInt8 {
 	/// represents no value
 	case none = 0
 	/// represents a raw value
@@ -36,8 +25,8 @@ public enum ValueType:UInt8 {
 	/// represents an object value
 	case obj = 7
 
-	/// initialize a value type given a underlying yyjson_type
-	internal init(_ yyjsonType:yyjson_type) {
+	/// initialize a value type given an underlying yyjson_type
+	internal init(_ yyjsonType: yyjson_type) {
 		switch yyjsonType {
 		case YYJSON_TYPE_NULL:
 			self = .null
@@ -57,7 +46,7 @@ public enum ValueType:UInt8 {
 	}
 
 	/// get the underlying yyjson_type
-	internal var yyjsonType:yyjson_type {
+	internal var yyjsonType: yyjson_type {
 		switch self {
 		case .null:
 			return YYJSON_TYPE_NULL
