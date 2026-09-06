@@ -158,6 +158,9 @@ public struct Decoding {
 		case documentRootError
 		/// a numeric value is outside the representable range of the requested type
 		case numberOutOfRange(requestedType: Any.Type, value: Double)
+		/// a real number was decoded where an integer was required, and it is not an exactly-representable integer
+		/// (e.g. `3.5` decoded as `Int`). Integral reals like `2.0` are accepted.
+		case nonIntegerNumber(Double)
 
 		/// additional information about the value type mismatch error
 		public struct ValueTypeMismatchInfo: Sendable {

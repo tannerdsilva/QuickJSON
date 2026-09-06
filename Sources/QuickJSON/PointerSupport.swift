@@ -169,22 +169,40 @@ extension UnsafeMutablePointer where Pointee == yyjson_val {
 	}
 
 	/// the raw signed integer backing this value.
-	/// - throws: `Decoding.Error.valueTypeMismatch` if the value is not a number.
+	/// - throws: `Decoding.Error.valueTypeMismatch` if the value is not a number; `Decoding.Error.nonIntegerNumber` if the value is a real that is not an exactly-representable integer.
 	private func decodeSignedInteger() throws -> Int64 {
 		let type = yyjson_get_type(self)
 		guard type == YYJSON_TYPE_NUM else {
 			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected: ValueType.num, found: ValueType(type)))
 		}
-		return yyjson_get_sint(self)
+		if yyjson_is_int(self) {
+			return yyjson_get_sint(self)
+		}
+		// a real-number value: accept it only when it is integral and exactly
+		// representable in the requested width (Foundation-compatible —
+		// `2.0` decodes as `Int(2)`, while `2.5` and `1e20` do not).
+		let real = yyjson_get_real(self)
+		guard let integer = Int64(exactly: real) else {
+			throw Decoding.Error.nonIntegerNumber(real)
+		}
+		return integer
 	}
 
 	/// the raw unsigned integer backing this value.
-	/// - throws: `Decoding.Error.valueTypeMismatch` if the value is not a number.
+	/// - throws: `Decoding.Error.valueTypeMismatch` if the value is not a number; `Decoding.Error.nonIntegerNumber` if the value is a real that is not an exactly-representable integer.
 	private func decodeUnsignedInteger() throws -> UInt64 {
 		let type = yyjson_get_type(self)
 		guard type == YYJSON_TYPE_NUM else {
 			throw Decoding.Error.valueTypeMismatch(Decoding.Error.ValueTypeMismatchInfo(expected: ValueType.num, found: ValueType(type)))
 		}
-		return yyjson_get_uint(self)
+		if yyjson_is_int(self) {
+			return yyjson_get_uint(self)
+		}
+		// real-number values: integral and in-range only (see decodeSignedInteger).
+		let real = yyjson_get_real(self)
+		guard let integer = UInt64(exactly: real) else {
+			throw Decoding.Error.nonIntegerNumber(real)
+		}
+		return integer
 	}
 }
