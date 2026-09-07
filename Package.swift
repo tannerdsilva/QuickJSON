@@ -16,7 +16,8 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/ibireme/yyjson.git", "0.11.0"..<"0.13.0"),
-		.package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
+		// floor is 1.6.0: earlier versions fail to build on linux (`localtime` returns an optional on newer toolchains).
+		.package(url: "https://github.com/apple/swift-log.git", from: "1.6.0"),
 	],
 	targets: [
 		.target(

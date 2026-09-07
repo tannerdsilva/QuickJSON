@@ -16,6 +16,7 @@
 - Updated the package manifest to `swift-tools-version: 6.0` with explicit platform declarations.
 - Reorganized the source tree: one type per file, without the former `ec_`/`dc_` prefixes, and collapsed the three single-value encoding container variants into a single position-based implementation.
 - Updated yyjson to 0.11..<0.13 (resolved 0.12.0).
+- Updated the swift-log floor to 1.6.0 (resolved 1.15.0) — earlier versions fail to build on Linux because `Logging.swift` passes the optional `localtime` result straight into `strftime` on newer toolchains.
 - Added a hand-rolled benchmark suite (Swift Testing, no external dependencies) comparing against Foundation's JSON codecs.
 - Rewrote the test suite using Swift Testing (8 suites, 49 tests), covering round trips, flags, error paths, container semantics, memory regions, handler decoding, benchmarks, and edge cases.
 - Rewrote the README with accurate claims, usage examples, and measured performance numbers.
